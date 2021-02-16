@@ -691,8 +691,7 @@ rewards_map_test() ->
   ?assertEqual(get_splits(Gw),[60,40]),
   ?assertEqual(get_split(Gw, owner_address(Gw)), 60),
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 40),
-  Gw#gateway_v2{rewards_map = set_split(Gw,<<"owner_address">>,70)},
-  blockchain_ledger_gateway_v2:set_split(Gw,<<"owner_address2">>,30),
+  ?assertEqual(set_split(Gw,<<"owner_address">>,70),[{<<"owner_address">>,70},{<<"owner_address2">>,40}]),
   ?assertEqual(get_split(Gw, owner_address(Gw)), 70),
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 30).
 
