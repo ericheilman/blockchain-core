@@ -140,9 +140,8 @@ absorb(Txn, Chain) ->
     Rewards = ?MODULE:rewards(Txn),
    %% TxnReward = lists:sort([blockchain_txn_reward_v1:hash(R) || R <- Rewards]),
     TxnReward = [blockchain_txn_reward_v1:gateway(R) || R <- Rewards],
-
-    Address = blockchain_txn_reward_v1:gateway(TxnReward),
-    Gateway = blockchain_ledger_v1:find_gateway_info(Address,Ledger),
+   %% Address = blockchain_txn_reward_v1:gateway(TxnReward),
+    Gateway = blockchain_ledger_v1:find_gateway_info(TxnReward,Ledger),
     RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
 
     lists:foreach(fun({Owner,Percentage}) ->
