@@ -36,6 +36,7 @@
          is_valid_percentage/2,
          seller_has_percentage/1,
          is_valid_num_splits/2,
+         splits_total_100/1,
          absorb/2,
          print/1,
          to_json/2
@@ -208,6 +209,20 @@ is_valid_num_splits(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway},
         true -> true
      end.
 
+ -spec splits_total_100(txn_split_rewards()) -> boolean().
+splits_total_100(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
+                                                          seller=Seller,
+                                                          buyer=Buyer,
+                                                          percentage=Percentage}) ->
+     OldOwnerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
+     OldSellerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Buyer),
+     Gw1 = blockchain_ledger_gateway_v2:set_split(Gateway,Seller,OldOwnerPercentage - Percentage),
+     Gw2 = blockchain_ledger_gateway_v2:set_split(Gw1,Buyer,OldSellerPercentage + Percentage),
+     PostSplitPercentage = sum(blockchain_ledger_gateway_v2:get_splits(Gw2)),
+     if PostSplitPercentage =/= 100 -> false;
+        true -> true
+     end.
+
  -spec is_valid(txn_split_rewards(), blockchain:blockchain()) -> ok | {error, any()}.
 is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
                                                 buyer=Buyer,
@@ -226,6 +241,8 @@ is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
                                           {error, invalid_percentage}},
                   {fun() -> is_valid_num_splits(Txn, Ledger) end,
                                           {error, too_many_splits}},
+                  {fun() -> is_valid_split_total(Txn) end,
+                                          {error, invalid_split_total}},
                   {fun() -> seller_owns_gateway(Txn, Ledger) end,
                                           {error, gateway_not_owned_by_seller}},
                   {fun() -> seller_has_percentage(Txn) end,
