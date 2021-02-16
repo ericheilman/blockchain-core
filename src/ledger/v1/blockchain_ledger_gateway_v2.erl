@@ -180,19 +180,11 @@ get_splits(Gateway) ->
   Splits.
 
 %% implement a sum function that ensures splits add up to 100
-
-%% get index of current reward map
-%% get current reward split %
-%% create a new tuple with new reward split %
-%% append new tuple to reward map list
-%% delete old tuple from reward map list
 %% sort reward map list
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> gateway().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
-  RewardsMap = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit}),
+  RewardsMap = lists:keysort(2,lists:keyreplace(OwnerAddress,1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
   Gateway#gateway_v2{rewards_map = RewardsMap}.
-
-
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
@@ -701,7 +693,6 @@ rewards_map_test() ->
   Gw3 = set_split(Gw2,<<"owner_address2">>,30),
   ?assertEqual(get_split(Gw2,<<"owner_address">>),70),
   ?assertEqual(get_split(Gw3,<<"owner_address2">>),30).
-
 
 owner_address_test() ->
   Gw = new(<<"owner_address">>, 12),
