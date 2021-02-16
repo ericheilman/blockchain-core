@@ -6,34 +6,34 @@
 -module(blockchain_ledger_gateway_v2).
 
 -export([
-  new/2, new/3,
-  owner_address/1, owner_address/2,
-  location/1, location/2,
-  score/4,
-  version/1, version/2,
-  add_neighbor/2, remove_neighbor/2,
-  neighbors/1, neighbors/2,
-  rewards_map/1, rewards_map/2,
-  get_splits/1, get_split/2, get_owner_split/2,
-  num_splits/1, set_split/3,
-  get_owners/1,
-  last_poc_challenge/1, last_poc_challenge/2,
-  last_poc_onion_key_hash/1, last_poc_onion_key_hash/2,
-  nonce/1, nonce/2,
-  print/3, print/4,
-  serialize/1, deserialize/1,
-  alpha/1,
-  beta/1,
-  delta/1,
-  set_alpha_beta_delta/4,
-  add_witness/1, add_witness/5,
-  has_witness/2,
-  clear_witnesses/1,
-  remove_witness/2,
-  witnesses/1,
-  witnesses_plain/1,
-  witness_hist/1, witness_recent_time/1, witness_first_time/1,
-  oui/1, oui/2
+    new/2, new/3,
+    owner_address/1, owner_address/2,
+    location/1, location/2,
+    score/4,
+    version/1, version/2,
+    add_neighbor/2, remove_neighbor/2,
+    neighbors/1, neighbors/2,
+    rewards_map/1, rewards_map/2,
+    get_splits/1, get_split/2,
+    num_splits/1, set_split/3,
+    get_owners/1, get_owner_split/2,
+    last_poc_challenge/1, last_poc_challenge/2,
+    last_poc_onion_key_hash/1, last_poc_onion_key_hash/2,
+    nonce/1, nonce/2,
+    print/3, print/4,
+    serialize/1, deserialize/1,
+    alpha/1,
+    beta/1,
+    delta/1,
+    set_alpha_beta_delta/4,
+    add_witness/1, add_witness/5,
+    has_witness/2,
+    clear_witnesses/1,
+    remove_witness/2,
+    witnesses/1,
+    witnesses_plain/1,
+    witness_hist/1, witness_recent_time/1, witness_first_time/1,
+    oui/1, oui/2
 ]).
 
 -import(blockchain_utils, [normalize_float/1]).
@@ -46,28 +46,28 @@
 -endif.
 
 -record(witness, {
-  nonce :: non_neg_integer(),
-  count :: non_neg_integer(),
-  hist = erlang:error(no_histogram) :: [{integer(), integer()}], %% sampled rssi histogram
-  first_time :: undefined | non_neg_integer(), %% first time a hotspot witnessed this one
-  recent_time :: undefined | non_neg_integer(), %% most recent a hotspots witnessed this one
-  time = #{} :: #{integer() => integer()} %% TODO: add time of flight histogram
+         nonce :: non_neg_integer(),
+         count :: non_neg_integer(),
+         hist = erlang:error(no_histogram) :: [{integer(), integer()}], %% sampled rssi histogram
+         first_time :: undefined | non_neg_integer(), %% first time a hotspot witnessed this one
+         recent_time :: undefined | non_neg_integer(), %% most recent a hotspots witnessed this one
+         time = #{} :: #{integer() => integer()} %% TODO: add time of flight histogram
 }).
 
 -record(gateway_v2, {
-  owner_address :: libp2p_crypto:pubkey_bin(),
-  location :: undefined | pos_integer(),
-  alpha = 1.0 :: float(),
-  beta = 1.0 :: float(),
-  delta :: non_neg_integer(),
-  last_poc_challenge :: undefined | non_neg_integer(),
-  last_poc_onion_key_hash :: undefined | binary(),
-  nonce = 0 :: non_neg_integer(),
-  version = 0 :: non_neg_integer(),
-  neighbors = [] :: [libp2p_crypto:pubkey_bin()],
-  witnesses = [] :: witnesses_int(),
-  oui = undefined :: undefined | pos_integer(),
-  rewards_map = [] :: rewards_map()
+    owner_address :: libp2p_crypto:pubkey_bin(),
+    location :: undefined | pos_integer(),
+    alpha = 1.0 :: float(),
+    beta = 1.0 :: float(),
+    delta :: non_neg_integer(),
+    last_poc_challenge :: undefined | non_neg_integer(),
+    last_poc_onion_key_hash :: undefined | binary(),
+    nonce = 0 :: non_neg_integer(),
+    version = 0 :: non_neg_integer(),
+    neighbors = [] :: [libp2p_crypto:pubkey_bin()],
+    witnesses = [] :: witnesses_int(),
+    oui = undefined :: undefined | pos_integer(),
+    rewards_map = [] :: rewards_map()
 }).
 
 -type gateway() :: #gateway_v2{}.
@@ -83,25 +83,25 @@
 %% @end
 %%--------------------------------------------------------------------
 -spec new(OwnerAddress :: libp2p_crypto:pubkey_bin(),
-    Location :: pos_integer() | undefined) -> gateway().
+          Location :: pos_integer() | undefined) -> gateway().
 new(OwnerAddress, Location) ->
-  #gateway_v2{
-    owner_address = OwnerAddress,
-    rewards_map = [{OwnerAddress, 100}],
-    location = Location,
-    delta = 1
-  }.
+    #gateway_v2{
+        owner_address = OwnerAddress,
+        rewards_map = [{OwnerAddress, 100}],
+        location = Location,
+        delta = 1
+    }.
 
 -spec new(OwnerAddress :: libp2p_crypto:pubkey_bin(),
-    Location :: pos_integer() | undefined,
-    Nonce :: non_neg_integer()) -> gateway().
+          Location :: pos_integer() | undefined,
+          Nonce :: non_neg_integer()) -> gateway().
 new(OwnerAddress, Location, Nonce) ->
-  #gateway_v2{
-    owner_address = OwnerAddress,
-    rewards_map = [{OwnerAddress, 100}],
-    location = Location,
-    nonce = Nonce,
-    delta = 1
+    #gateway_v2{
+        owner_address = OwnerAddress,
+        rewards_map = [{OwnerAddress, 100}],
+        location = Location,
+        nonce = Nonce,
+        delta = 1
   }.
 
 %%--------------------------------------------------------------------
@@ -110,14 +110,14 @@ new(OwnerAddress, Location, Nonce) ->
 %%--------------------------------------------------------------------
 -spec owner_address(Gateway :: gateway()) -> libp2p_crypto:pubkey_bin().
 owner_address(Gateway) ->
-  Gateway#gateway_v2.owner_address.
+    Gateway#gateway_v2.owner_address.
 
 %%--------------------------------------------------------------------
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
 -spec owner_address(OwnerAddress :: libp2p_crypto:pubkey_bin(),
-    Gateway :: gateway()) -> gateway().
+                    Gateway :: gateway()) -> gateway().
 owner_address(OwnerAddress, Gateway) ->
   Gateway#gateway_v2{owner_address = OwnerAddress}.
 
@@ -127,7 +127,7 @@ owner_address(OwnerAddress, Gateway) ->
 %%--------------------------------------------------------------------
 -spec location(Gateway :: gateway()) -> undefined | pos_integer().
 location(Gateway) ->
-  Gateway#gateway_v2.location.
+    Gateway#gateway_v2.location.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -135,27 +135,27 @@ location(Gateway) ->
 %%--------------------------------------------------------------------
 -spec location(Location :: pos_integer(), Gateway :: gateway()) -> gateway().
 location(Location, Gateway) ->
-  Gateway#gateway_v2{location = Location}.
+    Gateway#gateway_v2{location = Location}.
 
 version(Gateway) ->
-  Gateway#gateway_v2.version.
+    Gateway#gateway_v2.version.
 
 version(Version, Gateway) ->
-  Gateway#gateway_v2{version = Version}.
+    Gateway#gateway_v2{version = Version}.
 
 add_neighbor(Neighbor, Gateway) ->
-  N = Gateway#gateway_v2.neighbors,
-  Gateway#gateway_v2{neighbors = lists:usort([Neighbor | N])}.
+    N = Gateway#gateway_v2.neighbors,
+    Gateway#gateway_v2{neighbors = lists:usort([Neighbor | N])}.
 
 remove_neighbor(Neighbor, Gateway) ->
-  N = Gateway#gateway_v2.neighbors,
-  Gateway#gateway_v2{neighbors = lists:delete(Neighbor, N)}.
+    N = Gateway#gateway_v2.neighbors,
+    Gateway#gateway_v2{neighbors = lists:delete(Neighbor, N)}.
 
 neighbors(Gateway) ->
-  Gateway#gateway_v2.neighbors.
+    Gateway#gateway_v2.neighbors.
 
 neighbors(Neighbors, Gateway) ->
-  Gateway#gateway_v2{neighbors = Neighbors}.
+    Gateway#gateway_v2{neighbors = Neighbors}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -164,38 +164,38 @@ neighbors(Neighbors, Gateway) ->
 
 -spec rewards_map(Gateway :: gateway()) -> rewards_map().
 rewards_map(Gateway) ->
-  Gateway#gateway_v2.rewards_map.
+    Gateway#gateway_v2.rewards_map.
 
 -spec rewards_map(Gateway :: gateway(), RewardsMap :: rewards_map()) -> rewards_map().
 rewards_map(Gateway,RewardsMap) ->
-  Gateway#gateway_v2{rewards_map = RewardsMap}.
+    Gateway#gateway_v2{rewards_map = RewardsMap}.
 
 -spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
 get_split(Gateway, OwnerAddress) ->
-  lists:nth(1, [Y || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X]).
+    lists:nth(1, [Y || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X]).
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
 get_splits(Gateway) ->
-  {_, Splits} = lists:unzip(Gateway#gateway_v2.rewards_map),
-  Splits.
+    {_, Splits} = lists:unzip(Gateway#gateway_v2.rewards_map),
+     Splits.
 
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> gateway().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
-  RewardsMap = lists:keysort(2,lists:keyreplace(OwnerAddress,1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
-  Gateway#gateway_v2{rewards_map = RewardsMap}.
+    RewardsMap = lists:keysort(2,lists:keyreplace(OwnerAddress,1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
+    Gateway#gateway_v2{rewards_map = RewardsMap}.
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
-  length(Gateway#gateway_v2.rewards_map).
+    length(Gateway#gateway_v2.rewards_map).
 
 -spec get_owners(Gateway :: gateway()) -> [libp2p_crypto:pubkey_bin()].
 get_owners(Gateway) ->
-  {Owners, _} = lists:unzip(Gateway#gateway_v2.rewards_map),
-  Owners.
+    {Owners, _} = lists:unzip(Gateway#gateway_v2.rewards_map),
+     Owners.
 
 -spec get_owner_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> rewards_map() | undefined.
 get_owner_split(Gateway, OwnerAddress) ->
-  lists:keyfind(OwnerAddress,1,Gateway#gateway_v2.rewards_map).
+    lists:keyfind(OwnerAddress,1,Gateway#gateway_v2.rewards_map).
 
 
 %%--------------------------------------------------------------------
@@ -213,14 +213,14 @@ get_owner_split(Gateway, OwnerAddress) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec score(Address :: libp2p_crypto:pubkey_bin(),
-    Gateway :: gateway(),
-    Height :: pos_integer(),
-    Ledger :: blockchain_ledger_v2:ledger()) -> {float(), float(), float()}.
+            Gateway :: gateway(),
+            Height :: pos_integer(),
+            Ledger :: blockchain_ledger_v2:ledger()) -> {float(), float(), float()}.
 score(Address,
-    #gateway_v2{alpha = Alpha, beta = Beta, delta = Delta},
-    Height,
-    Ledger) ->
-  blockchain_score_cache:fetch({Address, Alpha, Beta, Delta, Height},
+      #gateway_v2{alpha = Alpha, beta = Beta, delta = Delta},
+      Height,
+      Ledger) ->
+    blockchain_score_cache:fetch({Address, Alpha, Beta, Delta, Height},
     fun() ->
       {ok, AlphaDecay} = blockchain:config(?alpha_decay, Ledger),
       {ok, BetaDecay} = blockchain:config(?beta_decay, Ledger),
