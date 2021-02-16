@@ -686,7 +686,7 @@ new_test() ->
   ?assertEqual(Gw, new(<<"owner_address">>, 12)).
 
 rewards_map_test() ->
-  Gw = #gateway_v2{
+  Gw1 = #gateway_v2{
     owner_address = <<"owner_address">>,
     location = 12,
     rewards_map = [{<<"owner_address">>, 60}, {<<"owner_address2">>, 40}],
@@ -695,13 +695,16 @@ rewards_map_test() ->
     nonce = 0,
     delta = 1
   },
-  ?assertEqual(get_owners(Gw),[<<"owner_address">>,<<"owner_address2">>]),
-  ?assertEqual(get_owner_split(Gw,<<"owner_address">>),{<<"owner_address">>,60}),
-  ?assertEqual(num_splits(Gw),2),
-  ?assertEqual(get_splits(Gw),[60,40]),
-  ?assertEqual(get_split(Gw, owner_address(Gw)), 60),
-  ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 40),
-  ?assertEqual(get_split(Gw, owner_address(Gw)), 70).
+  ?assertEqual(get_owners(Gw1),[<<"owner_address">>,<<"owner_address2">>]),
+  ?assertEqual(get_owner_split(Gw1,<<"owner_address">>),{<<"owner_address">>,60}),
+  ?assertEqual(num_splits(Gw1),2),
+  ?assertEqual(get_splits(Gw1,[60,40]),
+  ?assertEqual(get_split(Gw1, owner_address(Gw)1), 60),
+  ?assertEqual(get_split(Gw1, owner_address(owner_address(<<"owner_address2">>, Gw))), 40),
+  Gw2 = set_split(Gw1,<<"owner_address">>,70),
+  Gw3 = set_split(Gw1,<<"owner_address2">>,30),
+  ?assertEqual(get_split(Gw2,owner_address(Gw2)),70),
+  ?assertEqual(get_split(Gw2,owner_address(Gw3)),30).
 
 rewards_split_test() ->
   Gw1 = new(<<"owner_address">>, 12),
