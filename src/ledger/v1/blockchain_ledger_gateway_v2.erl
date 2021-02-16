@@ -172,7 +172,7 @@ rewards_map(Gateway,RewardsMap) ->
 
 -spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
 get_split(Gateway,OwnerAddress) ->
-  maps:find(OwnerAddress,Gateway#gateway_v2.rewards_map).
+  [Y || {X1, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X1].
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
 get_splits(Gateway) ->
