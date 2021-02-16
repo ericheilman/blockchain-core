@@ -72,10 +72,10 @@ new(Gateway, Seller, Buyer,  BuyerNonce, Percentage, AmountToSeller) when is_int
        gateway=Gateway,
        seller=Seller,
        buyer=Buyer,
+       buyer_nonce=BuyerNonce,
        percentage=Percentage,
        seller_signature= <<>>,
        buyer_signature= <<>>,
-       buyer_nonce=BuyerNonce,
        amount_to_seller=AmountToSeller,
        fee=0
       }.
@@ -390,7 +390,7 @@ new_6_test() ->
                                                 buyer_signature = <<>>,
                                                 buyer_nonce=1,
                                                 percentage = 2,
-                                                amount_to_seller=3,
+                                                amount_to_seller=100,
                                                 fee=0},
     ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 100, 100)).
 
