@@ -13,7 +13,7 @@
   version/1, version/2,
   add_neighbor/2, remove_neighbor/2,
   neighbors/1, neighbors/2,
-  rewards_map/1,
+  rewards_map/1, rewards_map/2,
   get_splits/1, get_split/2, get_owner_split/2,
   num_splits/1, set_split/3,
   get_owners/1,
@@ -166,6 +166,10 @@ neighbors(Neighbors, Gateway) ->
 rewards_map(Gateway) ->
   Gateway#gateway_v2.rewards_map.
 
+-spec rewards_map(Gateway :: gateway(), RewardsMap :: rewards_map()) -> rewards_map().
+rewards_map(Gateway,RewardsMap) ->
+  Gateway#gateway_v2{rewards_map = RewardsMap}.
+
 -spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
 get_split(Gateway, OwnerAddress) ->
   lists:nth(1, [Y || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X]).
@@ -185,9 +189,8 @@ get_splits(Gateway) ->
 %% sort reward map list
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> rewards_map().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
-  erlang:display(lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
-  Gateway#gateway_v2{rewards_map = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit})}.
-
+  RewardsMap = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit}),
+  rewards_map(Gateway,RewardsMap).
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
