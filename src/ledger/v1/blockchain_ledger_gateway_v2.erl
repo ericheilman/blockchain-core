@@ -672,7 +672,7 @@ get_split_test() ->
         delta=1
     },
     ?assertEqual(get_split(Gw,owner_address(Gw)),60),
-    ?assertEqual(get_split(Gw,owner_address(owner_address(<<"owner_address2">>,Gw),40))).
+    ?assertEqual(get_split(Gw,owner_address(owner_address(<<"owner_address2">>,Gw))),40).
 
 
 owner_address_test() ->
