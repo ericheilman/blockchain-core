@@ -13,7 +13,7 @@
   version/1, version/2,
   add_neighbor/2, remove_neighbor/2,
   neighbors/1, neighbors/2,
-  rewards_map/1, rewards_map/2,
+  rewards_map/1,
   get_splits/1, get_split/2, get_owner_split/2,
   num_splits/1, set_split/3,
   get_owners/1,
