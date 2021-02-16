@@ -185,7 +185,8 @@ get_splits(Gateway) ->
 %% sort reward map list
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> rewards_map().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
-  lists:keyreplace(OwnerAddress, Gateway#gateway_v2.rewards_map,{OwnerAddress,RewardSplit}).
+  Split = lists:keyreplace(OwnerAddress, Gateway#gateway_v2.rewards_map,{OwnerAddress,RewardSplit}),
+  Split.
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
