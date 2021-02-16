@@ -129,44 +129,25 @@ is_valid(Txn, Chain) ->
 %%--------------------------------------------------------------------
 -spec absorb(txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
 absorb(Txn, Chain) ->
-
-%% is_valid(Receipt=#blockchain_poc_receipt_v1_pb{gateway=Gateway, signature=Signature}) ->
-  %%  lists:foreach(fun({{Owner, Address}, {Index, {Alpha, Beta}}}) ->
-  %%                      ok = blockchain_ledger_v1:add_gateway(Owner, Address, Index, 0, Ledger1),
-  %%                    ok = blockchain_ledger_v1:update_gateway_score(Address, {Alpha, Beta}, Ledger1)
-  %%          end, lists:zip(OwnerAndGateways, ScoredIndices)),
-
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
-
-      %% TxnReward = lists:sort([blockchain_txn_reward_v1:hash(R) || R <- Rewards]),
-   %% TxnReward = [blockchain_txn_reward_v1:gateway(R) || R <- Rewards],
-   %% Address = blockchain_txn_reward_v1:gateway(TxnReward),
-    Gateway = blockchain_ledger_v1:find_gateway_info(Rewards,Ledger),
-    RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
-
-    lists:foreach(fun({Owner,Percentage}) ->
-        AccRewards = lists:foldl(
-            fun(Reward, Acc) ->
-                erlang:display("---------"),
-                erlang:display(blockchain_txn_reward_v1:gateway(Reward),
-                erlang:display("---------"),
-                Account = Owner,
-                Amount = (blockchain_txn_reward_v1:amount(Reward) * Percentage) / 100,
-                Total = maps:get(Account, Acc, 0),
-                maps:put(Account, Total + Amount, Acc)
-            end,
-            #{},
-            Rewards
-        ),
-        maps:fold(
-            fun(Account, Amount, _) ->
-                blockchain_ledger_v1:credit_account(Account, Amount, Ledger)
-            end,
-            ok,
-            AccRewards
-        )
-end, RewardsMap).
+    AccRewards = lists:foldl(
+        fun(Reward, Acc) ->
+            Account = blockchain_txn_reward_v1:account(Reward),
+            Amount = blockchain_txn_reward_v1:amount(Reward),
+            Total = maps:get(Account, Acc, 0),
+            maps:put(Account, Total + Amount, Acc)
+        end,
+        #{},
+        Rewards
+    ),
+    maps:fold(
+        fun(Account, Amount, _) ->
+            blockchain_ledger_v1:credit_account(Account, Amount, Ledger)
+        end,
+        ok,
+        AccRewards
+    ).
 
 %%--------------------------------------------------------------------
 %% @doc
