@@ -188,7 +188,7 @@ get_owners(Gateway) ->
   {Owners, _} = lists:unzip(Gateway#gateway_v2.rewards_map),
   Owners.
 
--spec get_owner_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
+-spec get_owner_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> rewards_map().
 get_owner_split(Gateway, OwnerAddress) ->
   [{X,Y} || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X].
 
