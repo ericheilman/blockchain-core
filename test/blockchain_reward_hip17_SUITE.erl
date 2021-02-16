@@ -1295,7 +1295,10 @@ hip17_vars() ->
         ?consensus_percent => 0.06,
         ?dc_percent => 0.325,
         ?poc_challengers_percent => 0.0095,
-        ?securities_percent => 0.34
+        ?securities_percent => 0.34,
+        ?reward_transfer_minimum => 1,
+        ?reward_transfer_maximum => 100,
+        ?max_num_splits => 10
     }.
 
 known_locations() ->
