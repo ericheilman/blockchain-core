@@ -155,7 +155,7 @@ absorb(Txn, Chain) ->
         ),
         maps:fold(
             fun(Account, Amount, _) ->
-                blockchain_ledger_v1:credit_account(Owner, Amount, Ledger)
+                blockchain_ledger_v1:credit_account(Account, Amount, Ledger)
             end,
             ok,
             AccRewards
