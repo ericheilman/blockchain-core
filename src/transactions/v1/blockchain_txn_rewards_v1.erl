@@ -154,7 +154,7 @@ absorb(Txn, Chain) ->
             Rewards
         ),
         maps:fold(
-            fun(Owner, Amount, _) ->
+            fun(Account, Amount, _) ->
                 blockchain_ledger_v1:credit_account(Owner, Amount, Ledger)
             end,
             ok,
