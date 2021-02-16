@@ -140,7 +140,7 @@ absorb(Txn, Chain) ->
 
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
-    Gateway = ?MODULE:gateway(Txn),
+    Gateway = blockchain_txn_reward_v1:gateway(Rewards),
     RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
 
     lists:foreach(fun({Owner,Percentage}) ->
