@@ -127,7 +127,7 @@ is_valid(Txn, Chain) ->
 %% @doc
 %% @end
 %%--------------------------------------------------------------------
--spec absorb(txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
+-spec absorb(Txn :: txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
 absorb(Txn=#blockchain_txn_rewards_v1_pb{gateway=Gateway}, Chain) ->
 
 %% is_valid(Receipt=#blockchain_poc_receipt_v1_pb{gateway=Gateway, signature=Signature}) ->
