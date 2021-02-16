@@ -119,7 +119,7 @@ owner_address(Gateway) ->
 -spec owner_address(OwnerAddress :: libp2p_crypto:pubkey_bin(),
                     Gateway :: gateway()) -> gateway().
 owner_address(OwnerAddress, Gateway) ->
-    Gateway#gateway_v2{owner_address = OwnerAddress}.
+    Gateway#gateway_v2{owner_address=OwnerAddress}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -317,7 +317,7 @@ last_poc_onion_key_hash(Gateway) ->
 %%--------------------------------------------------------------------
 -spec last_poc_onion_key_hash(LastPocOnionKeyHash :: binary(), Gateway :: gateway()) -> gateway().
 last_poc_onion_key_hash(LastPocOnionKeyHash, Gateway) ->
-    Gateway#gateway_v2{last_poc_onion_key_hash = LastPocOnionKeyHash}.
+    Gateway#gateway_v2{last_poc_onion_key_hash=LastPocOnionKeyHash}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -333,15 +333,15 @@ nonce(Gateway) ->
 %%--------------------------------------------------------------------
 -spec nonce(Nonce :: non_neg_integer(), Gateway :: gateway()) -> gateway().
 nonce(Nonce, Gateway) ->
-    Gateway#gateway_v2{nonce = Nonce}.
+    Gateway#gateway_v2{nonce=Nonce}.
 
 -spec print(Address :: libp2p_crypto:pubkey_bin(), Gateway :: gateway(),
             Ledger :: blockchain_ledger_v1:ledger()) -> list().
 print(Address, Gateway, Ledger) ->
-  print(Address, Gateway, Ledger, false).
+    print(Address, Gateway, Ledger, false).
 
 -spec print(Address :: libp2p_crypto:pubkey_bin(), Gateway :: gateway(),
-    Ledger :: blockchain_ledger_v1:ledger(), boolean()) -> list().
+            Ledger :: blockchain_ledger_v1:ledger(), boolean()) -> list().
 print(Address, Gateway, Ledger, Verbose) ->
     %% TODO: This is annoying but it makes printing happy on the CLI
     UndefinedHandleFunc =
@@ -453,67 +453,67 @@ add_witness(WitnessAddress,
                                                      | Witnesses])}
     end;
 add_witness(WitnessAddress,
-    WitnessGW = #gateway_v2{nonce = Nonce},
-    RSSI,
-    TS,
-    Gateway = #gateway_v2{witnesses = Witnesses}) ->
-  case lists:keytake(WitnessAddress, 1, Witnesses) of
-    {value, {_, Witness = #witness{nonce = Nonce, count = Count, hist = Hist}}, Witnesses1} ->
-      %% nonce is the same, increment the count
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        Witness#witness{count = Count + 1,
-          hist = update_histogram(RSSI, Hist),
-          recent_time = TS}}
-        | Witnesses1])};
-    _ ->
-      %% nonce mismatch or first witnesses for this peer
-      %% replace any old witness record with this new one
-      Histogram = create_histogram(WitnessGW, Gateway),
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        #witness{count = 1,
-          nonce = Nonce,
-          hist = update_histogram(RSSI, Histogram),
-          first_time = TS,
-          recent_time = TS}}
-        | Witnesses])}
-  end.
+            WitnessGW = #gateway_v2{nonce=Nonce},
+            RSSI,
+            TS,
+            Gateway = #gateway_v2{witnesses=Witnesses}) ->
+    case lists:keytake(WitnessAddress, 1, Witnesses) of
+        {value, {_, Witness=#witness{nonce=Nonce, count=Count, hist=Hist}}, Witnesses1} ->
+            %% nonce is the same, increment the count
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      Witness#witness{count=Count + 1,
+                                                                      hist=update_histogram(RSSI, Hist),
+                                                                      recent_time=TS}}
+                                                     | Witnesses1])};
+        _ ->
+            %% nonce mismatch or first witnesses for this peer
+            %% replace any old witness record with this new one
+            Histogram = create_histogram(WitnessGW, Gateway),
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      #witness{count=1,
+                                                               nonce=Nonce,
+                                                               hist=update_histogram(RSSI, Histogram),
+                                                               first_time=TS,
+                                                               recent_time=TS}}
+                                                     | Witnesses])}
+    end.
 
-create_histogram(#gateway_v2{location = WitnessLoc} = _WitnessGW,
-    #gateway_v2{location = GatewayLoc} = _Gateway,
-    Freq) ->
-  %% Get the free space path loss
-  FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc, Freq),
-  MinRcvSig = blockchain_utils:min_rcv_sig(FreeSpacePathLoss),
-  %% Maximum number of bins in the histogram
-  NumBins = 10,
-  %% Spacing between histogram keys (x axis)
-  StepSize = ((-132 + abs(MinRcvSig)) / (NumBins - 1)),
-  %% Construct a custom histogram around the expected path loss
-  lists:sort([{28, 0} | [{trunc(MinRcvSig + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).
+create_histogram(#gateway_v2{location=WitnessLoc}=_WitnessGW,
+                 #gateway_v2{location=GatewayLoc}=_Gateway,
+                 Freq) ->
+    %% Get the free space path loss
+    FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc, Freq),
+    MinRcvSig = blockchain_utils:min_rcv_sig(FreeSpacePathLoss),
+    %% Maximum number of bins in the histogram
+    NumBins = 10,
+    %% Spacing between histogram keys (x axis)
+    StepSize = ((-132 + abs(MinRcvSig))/(NumBins - 1)),
+    %% Construct a custom histogram around the expected path loss
+    lists:sort([ {28, 0} | [ {trunc(MinRcvSig + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).
 
-create_histogram(#gateway_v2{location = WitnessLoc} = _WitnessGW,
-    #gateway_v2{location = GatewayLoc} = _Gateway) ->
-  %% Get the free space path loss
-  FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc),
-  %% Maximum number of bins in the histogram
-  NumBins = 10,
-  %% Spacing between histogram keys (x axis)
-  StepSize = ((-132 + abs(FreeSpacePathLoss)) / (NumBins - 1)),
-  %% Construct a custom histogram around the expected path loss
-  lists:sort([{28, 0} | [{trunc(FreeSpacePathLoss + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).
+create_histogram(#gateway_v2{location=WitnessLoc}=_WitnessGW,
+                 #gateway_v2{location=GatewayLoc}=_Gateway) ->
+    %% Get the free space path loss
+    FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc),
+    %% Maximum number of bins in the histogram
+    NumBins = 10,
+    %% Spacing between histogram keys (x axis)
+    StepSize = ((-132 + abs(FreeSpacePathLoss))/(NumBins - 1)),
+    %% Construct a custom histogram around the expected path loss
+    lists:sort([ {28, 0} | [ {trunc(FreeSpacePathLoss + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).eq(0, (NumBins - 1))]]).
 
 update_histogram(Val, Histogram0) ->
-  Keys = lists:reverse(lists:sort(element(1, lists:unzip(Histogram0)))),
-  Histogram = maps:from_list(Histogram0),
-  Histogram1 = update_histogram_(Val, Keys, Histogram),
-  lists:sort(maps:to_list(Histogram1)).
+    Keys = lists:reverse(lists:sort(element(1, lists:unzip(Histogram0)))),
+    Histogram = maps:from_list(Histogram0),
+    Histogram1 = update_histogram_(Val, Keys, Histogram),
+    lists:sort(maps:to_list(Histogram1)).
 
 update_histogram_(_Val, [LastKey], Histogram) ->
-  maps:put(LastKey, maps:get(LastKey, Histogram, 0) + 1, Histogram);
+    maps:put(LastKey, maps:get(LastKey, Histogram, 0) + 1, Histogram);
 update_histogram_(Val, [Key | [Bound | _]], Histogram) when Val > Bound ->
-  maps:put(Key, maps:get(Key, Histogram, 0) + 1, Histogram);
+    maps:put(Key, maps:get(Key, Histogram, 0) + 1, Histogram);
 update_histogram_(Val, [_ | Tail], Histogram) ->
-  update_histogram_(Val, Tail, Histogram).
+    update_histogram_(Val, Tail, Histogram).
 
 -spec clear_witnesses(gateway()) -> gateway().
 clear_witnesses(Gateway) ->
