@@ -194,9 +194,7 @@ set_split(Gateway, OwnerAddress, RewardSplit) ->
   erlang:display("-----------"),
   erlang:display(RewardsMap),
   erlang:display("-----------"),
-  Gateway#gateway_v2{rewards_map = RewardsMap},
-  erlang:display("-----------"),
-  erlang:display(Gateway#gateway_v2.rewards_map).
+  Gateway#gateway_v2{rewards_map = RewardsMap}.
 
 
 
