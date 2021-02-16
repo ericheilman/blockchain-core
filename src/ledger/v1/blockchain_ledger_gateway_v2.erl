@@ -185,6 +185,7 @@ get_splits(Gateway) ->
 %% sort reward map list
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> rewards_map().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
+  erlang:display(lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
   Gateway#gateway_v2{rewards_map = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit})}.
 
 
@@ -692,8 +693,7 @@ rewards_map_test() ->
   ?assertEqual(get_split(Gw, owner_address(Gw)), 60),
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 40),
   ?assertEqual(set_split(Gw,<<"owner_address">>,70),Gw),
-  ?assertEqual(get_split(Gw, owner_address(Gw)), 70),
-  ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 30).
+  ?assertEqual(get_split(Gw, owner_address(Gw)), 70).
 
 
 
