@@ -36,7 +36,7 @@
          is_valid_percentage/2,
          seller_has_percentage/1,
          is_valid_num_splits/2,
-         splits_total_100/1,
+         is_valid_split_total/1,
          absorb/2,
          print/1,
          to_json/2
@@ -209,8 +209,8 @@ is_valid_num_splits(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway},
         true -> true
      end.
 
- -spec splits_total_100(txn_split_rewards()) -> boolean().
-splits_total_100(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
+ -spec is_valid_split_total(txn_split_rewards()) -> boolean().
+is_valid_split_total(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
                                                           seller=Seller,
                                                           buyer=Buyer,
                                                           percentage=Percentage}) ->
