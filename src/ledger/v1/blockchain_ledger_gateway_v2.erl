@@ -52,7 +52,7 @@
          first_time :: undefined | non_neg_integer(), %% first time a hotspot witnessed this one
          recent_time :: undefined | non_neg_integer(), %% most recent a hotspots witnessed this one
          time = #{} :: #{integer() => integer()} %% TODO: add time of flight histogram
-}).
+         }).
 
 -record(gateway_v2, {
     owner_address :: libp2p_crypto:pubkey_bin(),
@@ -230,6 +230,7 @@ score(Address,
                                          RV1 = normalize_float(erlang_stats:qbeta(0.25, NewAlpha, NewBeta)),
                                          RV2 = normalize_float(erlang_stats:qbeta(0.75, NewAlpha, NewBeta)),
                                          IQR = normalize_float(RV2 - RV1),
+                                         Mean = normalize_float(1 / (1 + NewBeta/NewAlpha)),
                                          {NewAlpha, NewBeta, normalize_float(Mean * (1 - IQR))}
                                  end).
 
@@ -284,8 +285,8 @@ delta(Gateway) ->
 -spec set_alpha_beta_delta(Alpha :: float(), Beta :: float(), Delta :: non_neg_integer(), Gateway :: gateway()) -> gateway().
 set_alpha_beta_delta(Alpha, Beta, Delta, Gateway) ->
     Gateway#gateway_v2{alpha = normalize_float(scale_shape_param(Alpha)),
-      beta = normalize_float(scale_shape_param(Beta)),
-      delta = Delta}.
+                       beta = normalize_float(scale_shape_param(Beta)),
+                       delta = Delta}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -301,7 +302,7 @@ last_poc_challenge(Gateway) ->
 %%--------------------------------------------------------------------
 -spec last_poc_challenge(LastPocChallenge :: non_neg_integer(), Gateway :: gateway()) -> gateway().
 last_poc_challenge(LastPocChallenge, Gateway) ->
-    Gateway#gateway_v2{last_poc_challenge = LastPocChallenge}.
+    Gateway#gateway_v2{last_poc_challenge=LastPocChallenge}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -403,7 +404,7 @@ add_witness({poc_receipt,
                                                      | Witnesses])}
     end;
 add_witness({poc_witness,
-              WitnessAddress,
+             WitnessAddress,
              WitnessGW = #gateway_v2{nonce=Nonce},
              POCWitness,
              Gateway = #gateway_v2{witnesses=Witnesses}}) ->
