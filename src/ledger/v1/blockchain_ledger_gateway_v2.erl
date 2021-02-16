@@ -653,13 +653,27 @@ new_test() ->
     Gw = #gateway_v2{
         owner_address = <<"owner_address">>,
         location = 12,
-        rewards_map = [[<<"owner_address">>,100]],
+        rewards_map = [{<<"owner_address">>,100}],
         last_poc_challenge = undefined,
         last_poc_onion_key_hash = undefined,
         nonce = 0,
         delta=1
     },
     ?assertEqual(Gw, new(<<"owner_address">>, 12)).
+
+get_split_test() ->
+    Gw = #gateway_v2{
+        owner_address = <<"owner_address">>,
+        location = 12,
+        rewards_map = [{<<"owner_address">>,60},{<<"owner_address2">>,40}],
+        last_poc_challenge = undefined,
+        last_poc_onion_key_hash = undefined,
+        nonce = 0,
+        delta=1
+    },
+    ?assertEqual(get_split(Gw,owner_address(Gw)),60),
+    ?assertEqual(get_split(Gw,owner_address(owner_address(<<"owner_address2">>,Gw),40))).
+
 
 owner_address_test() ->
     Gw = new(<<"owner_address">>, 12),
