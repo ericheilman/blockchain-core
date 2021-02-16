@@ -128,7 +128,7 @@ is_valid(Txn, Chain) ->
 %% @end
 %%--------------------------------------------------------------------
 -spec absorb(txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
-absorb(Txn=#blockchain_txn_rewards_v1_pb{gateway=Gateway}, Chain) ->
+absorb(Txn, Chain) ->
 
 %% is_valid(Receipt=#blockchain_poc_receipt_v1_pb{gateway=Gateway, signature=Signature}) ->
   %%  lists:foreach(fun({{Owner, Address}, {Index, {Alpha, Beta}}}) ->
@@ -138,7 +138,7 @@ absorb(Txn=#blockchain_txn_rewards_v1_pb{gateway=Gateway}, Chain) ->
 
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
-   %% Gateway = blockchain_txn_reward_v1:gateway(Rewards),
+    {gateway, Type, Gateway} = blockchain_txn_reward_v1:gateway(Rewards),
     RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
 
     lists:foreach(fun({Owner,Percentage}) ->
