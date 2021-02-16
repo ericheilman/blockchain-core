@@ -190,10 +190,6 @@ get_splits(Gateway) ->
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> gateway().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
   RewardsMap = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit}),
-  erlang:display(Gateway#gateway_v2.rewards_map),
-  erlang:display("-----------"),
-  erlang:display(RewardsMap),
-  erlang:display("-----------"),
   Gateway#gateway_v2{rewards_map = RewardsMap}.
 
 
@@ -703,8 +699,8 @@ rewards_map_test() ->
   ?assertEqual(get_split(Gw1, owner_address(owner_address(<<"owner_address2">>, Gw))), 40),
   Gw2 = set_split(Gw1,<<"owner_address">>,70),
   Gw3 = set_split(Gw1,<<"owner_address2">>,30),
-  ?assertEqual(get_split(Gw2,owner_address(Gw2)),70),
-  ?assertEqual(get_split(Gw2,owner_address(Gw3)),30).
+  ?assertEqual(get_split(Gw2,<<"owner_address">>),70),
+  ?assertEqual(get_split(Gw3,<<"owner_address2">>),30).
 
 rewards_split_test() ->
   Gw1 = new(<<"owner_address">>, 12),
