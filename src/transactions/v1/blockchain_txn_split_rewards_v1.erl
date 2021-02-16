@@ -352,7 +352,7 @@ txn_fee_valid(#blockchain_txn_split_rewards_v1_pb{fee=Fee}=Txn, Chain, AreFeesEn
     ExpectedTxnFee =< Fee orelse not AreFeesEnabled.
 
 -spec buyer_nonce_correct(txn_split_rewards(), blockchain_ledger_v1:ledger()) -> boolean().
-buyer_nonce_correct(#blockchain_txn_transfer_hotspot_v1_pb{buyer_nonce=Nonce,
+buyer_nonce_correct(#blockchain_txn_split_rewards_v1_pb{buyer_nonce=Nonce,
                                                            buyer=Buyer}, Ledger) ->
     case blockchain_ledger_v1:find_entry(Buyer, Ledger) of
         {error, _} -> false;
