@@ -187,14 +187,14 @@ get_splits(Gateway) ->
 %% append new tuple to reward map list
 %% delete old tuple from reward map list
 %% sort reward map list
--spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> rewards_map().
+-spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> gateway().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
   RewardsMap = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit}),
   erlang:display(Gateway#gateway_v2.rewards_map),
   erlang:display("-----------"),
   erlang:display(RewardsMap),
   erlang:display("-----------"),
-  rewards_map(Gateway,RewardsMap).
+  Gateway#gateway_v2{rewards_map = RewardsMap}.
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
