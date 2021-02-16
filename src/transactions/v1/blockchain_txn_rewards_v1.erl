@@ -1596,6 +1596,9 @@ dc_rewards_test() ->
         sc_version => 2,
         sc_grace_blocks => 5,
         reward_version => 2,
+        reward_transfer_minimum => 1,
+        reward_transfer_maximum => 100,
+        max_num_splits => 10,
         oracle_price => 100000000, %% 1 dollar
         consensus_members => [<<"c">>, <<"d">>]
     },
@@ -1643,6 +1646,9 @@ dc_rewards_v3_test() ->
         sc_version => 2,
         sc_grace_blocks => 5,
         reward_version => 3,
+        reward_transfer_minimum => 1,
+        reward_transfer_maximum => 100,
+        max_num_splits => 10,
         oracle_price => 100000000, %% 1 dollar
         consensus_members => [<<"c">>, <<"d">>]
     },
@@ -1693,6 +1699,9 @@ dc_rewards_v3_spillover_test() ->
         sc_version => 2,
         sc_grace_blocks => 5,
         reward_version => 3,
+        reward_transfer_minimum => 1,
+        reward_transfer_maximum => 100,
+        max_num_splits => 10,
         poc_version => 5,
         dc_remainder => 0,
         oracle_price => 100000000, %% 1 dollar
