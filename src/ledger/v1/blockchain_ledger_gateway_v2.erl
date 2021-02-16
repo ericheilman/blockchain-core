@@ -704,8 +704,9 @@ rewards_map_test() ->
   ?assertEqual(get_split(Gw, owner_address(Gw)), 70).
 
 rewards_split_test() ->
-  Gw = new(<<"owner_address">>, 12),
-  ?assertEqual(set_split(Gw,owner_address(Gw),70),Gw).
+  Gw1 = new(<<"owner_address">>, 12),
+  Gw2 = set_split(Gw1,owner_address(Gw1),70),
+  ?assertEqual(get_split(Gw2,owner_address(Gw2)),70).
 
 owner_address_test() ->
   Gw = new(<<"owner_address">>, 12),
