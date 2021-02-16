@@ -852,7 +852,7 @@ load_gateways(Gws, Ledger) ->
               cache_put(Ledger, GwDenormCF, <<Address/binary, "-last-challenge">>,
                         term_to_binary(LastChallenge)),
               cache_put(Ledger, GwDenormCF, <<Address/binary, "-owner">>, Owner),
-              cache_put(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, RewardsMap),
+              cache_put(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, term_to_binary(RewardsMap)),
               cache_put(Ledger, AGwsCF, Address, Bin)
       end,
       maps:from_list(Gws)),
@@ -1187,7 +1187,7 @@ update_gateway(Gw, GwAddr, Ledger) ->
     cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-last-challenge">>,
               term_to_binary(LastChallenge)),
     cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-owner">>, Owner),
-    cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-rewardsmap">>, RewardsMap).
+    cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-rewardsmap">>, term_to_binary(RewardsMap)).
 
 -spec add_gateway_location(libp2p_crypto:pubkey_bin(), non_neg_integer(), non_neg_integer(), ledger()) -> ok | {error, no_active_gateway}.
 add_gateway_location(GatewayAddress, Location, Nonce, Ledger) ->
@@ -3371,7 +3371,7 @@ bootstrap_gw_denorm(Ledger) ->
               cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-last-challenge">>,
                         term_to_binary(LastChallenge)),
               cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-owner">>, Owner),
-              cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-rewardsmap">>, RewardsMap)
+              cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-rewardsmap">>, term_to_binary(RewardsMap))
 
       end,
       ignore).
