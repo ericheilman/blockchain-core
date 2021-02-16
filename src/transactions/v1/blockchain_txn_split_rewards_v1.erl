@@ -389,10 +389,10 @@ new_6_test() ->
                                                 buyer= <<"buyer">>,
                                                 buyer_signature = <<>>,
                                                 buyer_nonce=1,
-                                                percentage = 2,
+                                                percentage = 50,
                                                 amount_to_seller=100,
                                                 fee=0},
-    ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 100, 100)).
+    ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 50, 100)).
 
 gateway_test() ->
     Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1,20),
