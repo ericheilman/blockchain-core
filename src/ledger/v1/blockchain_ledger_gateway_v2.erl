@@ -14,7 +14,7 @@
   add_neighbor/2, remove_neighbor/2,
   neighbors/1, neighbors/2,
   rewards_map/1, rewards_map/2,
-  get_splits/1, get_split/2,
+  get_splits/1, get_split/2, get_owner_split/2,
   num_splits/1, set_split/3,
   get_owners/1,
   last_poc_challenge/1, last_poc_challenge/2,
@@ -164,19 +164,20 @@ neighbors(Neighbors, Gateway) ->
 
 -spec rewards_map(Gateway :: gateway()) -> rewards_map().
 rewards_map(Gateway) ->
-  maps:from_list(Gateway#gateway_v2.rewards_map).
-
--spec rewards_map(Gateway :: gateway(), RewardsMap :: rewards_map()) -> rewards_map().
-rewards_map(Gateway, RewardsMap) ->
-  Gateway#gateway_v2{rewards_map = RewardsMap}.
+  Gateway#gateway_v2.rewards_map.
 
 -spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
 get_split(Gateway, OwnerAddress) ->
-  lists:nth(1, [Y || {X1, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X1]).
+  lists:nth(1, [Y || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X]).
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
 get_splits(Gateway) ->
-  maps:values(Gateway#gateway_v2.rewards_map).
+  {_, Splits} = lists:unzip(Gateway#gateway_v2.rewards_map),
+  Splits.
+
+-spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> boolean().
+set_split(Gateway, OwnerAddress, RewardSplit) ->
+  maps:put(OwnerAddress, RewardSplit, Gateway#gateway_v2.rewards_map).
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
@@ -187,9 +188,11 @@ get_owners(Gateway) ->
   {Owners, _} = lists:unzip(Gateway#gateway_v2.rewards_map),
   Owners.
 
--spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> boolean().
-set_split(Gateway, OwnerAddress, RewardSplit) ->
-  maps:put(OwnerAddress, RewardSplit, Gateway#gateway_v2.rewards_map).
+-spec get_owner_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
+get_owner_split(Gateway, OwnerAddress) ->
+  [{X,Y} || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X].
+
+
 
 %%--------------------------------------------------------------------
 %% @doc The score corresponds to the P(claim_of_location).
@@ -673,7 +676,9 @@ rewards_map_test() ->
     delta = 1
   },
   ?assertEqual(get_owners(Gw),[<<"owner_address">>,<<"owner_address2">>]),
+  ?assertEqual(get_owner_split(Gw,<<"owner_address">>),{<<"owner_address">>,60}),
   ?assertEqual(num_splits(Gw),2),
+  ?assertEqual(get_splits(Gw),[60,40]),
   ?assertEqual(get_split(Gw, owner_address(Gw)), 60),
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 40).
 
