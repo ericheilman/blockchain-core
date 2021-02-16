@@ -172,7 +172,7 @@ rewards_map(Gateway,RewardsMap) ->
 
 -spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
 get_split(Gateway,OwnerAddress) ->
-  [Y || {X1, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X1].
+  lists:nth(1,[Y || {X1, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X1]).
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
 get_splits(Gateway) ->
@@ -671,7 +671,7 @@ get_split_test() ->
         nonce = 0,
         delta=1
     },
-    ?assertEqual(get_split(Gw,owner_address(Gw)),[60]),
+    ?assertEqual(get_split(Gw,owner_address(Gw)),60),
     ?assertEqual(get_split(Gw,owner_address(owner_address(<<"owner_address2">>,Gw))),[40]).
 
 
