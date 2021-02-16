@@ -87,7 +87,7 @@
 new(OwnerAddress, Location) ->
     #gateway_v2{
         owner_address=OwnerAddress,
-        rewards_map=[[OwnerAddress,100]],        
+        rewards_map=[{OwnerAddress,100}],
         location=Location,
         delta=1
     }.
@@ -98,7 +98,7 @@ new(OwnerAddress, Location) ->
 new(OwnerAddress, Location, Nonce) ->
     #gateway_v2{
         owner_address=OwnerAddress,
-        rewards_map=[[OwnerAddress,100]],
+        rewards_map=[{OwnerAddress,100}],
         location=Location,
         nonce=Nonce,
         delta=1
@@ -671,8 +671,8 @@ get_split_test() ->
         nonce = 0,
         delta=1
     },
-    ?assertEqual(get_split(Gw,owner_address(Gw)),60),
-    ?assertEqual(get_split(Gw,owner_address(owner_address(<<"owner_address2">>,Gw))),40).
+    ?assertEqual(get_split(Gw,owner_address(Gw)),[60]),
+    ?assertEqual(get_split(Gw,owner_address(owner_address(<<"owner_address2">>,Gw))),[40]).
 
 
 owner_address_test() ->
