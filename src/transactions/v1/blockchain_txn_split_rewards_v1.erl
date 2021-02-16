@@ -370,7 +370,7 @@ get_config_or_default(?transfer_hotspot_stale_poc_blocks=Config, Ledger) ->
     end.
 
 -ifdef(TEST).
-new_4_test() ->
+new_5_test() ->
     Tx = #blockchain_txn_split_rewards_v1_pb{gateway= <<"gateway">>,
                                                 seller= <<"seller">>,
                                                 seller_signature = <<>>,
@@ -382,17 +382,17 @@ new_4_test() ->
                                                 fee=0},
     ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>,1, 50)).
 
-new_5_test() ->
+new_6_test() ->
     Tx = #blockchain_txn_split_rewards_v1_pb{gateway= <<"gateway">>,
                                                 seller= <<"seller">>,
                                                 seller_signature = <<>>,
                                                 buyer= <<"buyer">>,
                                                 buyer_signature = <<>>,
                                                 buyer_nonce=1,
-                                                percentage = 100,
-                                                amount_to_seller=100,
+                                                percentage = 2,
+                                                amount_to_seller=3,
                                                 fee=0},
-    ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 100, 100)).
+    ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 100, 100)).
 
 gateway_test() ->
     Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1,20),
