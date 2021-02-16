@@ -134,7 +134,7 @@ absorb(Txn, Chain) ->
     AccRewards = lists:foldl(
         fun(Reward, Acc) ->
             Gateway = blockchain_txn_reward_v1:gateway(Reward),
-            RewardsMap = blockchain_ledger_v1:find_gateway_rewards_map(Gateway),
+            RewardsMap = blockchain_ledger_v1:find_gateway_rewards_map(Gateway,Ledger),
             erlang:display(RewardsMap),
             Account = blockchain_txn_reward_v1:account(Reward),
             Amount = blockchain_txn_reward_v1:amount(Reward),
