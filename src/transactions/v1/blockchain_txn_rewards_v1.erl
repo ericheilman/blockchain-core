@@ -139,44 +139,28 @@ absorb(Txn, Chain) ->
 
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
-    AccRewards = lists:foldl(
-    erlang:display("----- Rewards -----"),
-    erlang:display(Rewards),
-    erlang:display("----- Rewards -----"),
+    Gateway = gateway(Txn),
+    RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
 
-
-        fun(Reward, Acc) ->
-            erlang:display("----- Reward -----"),
-            erlang:display(Reward),
-            erlang:display("----- Reward -----"),
-
-            Account = blockchain_txn_reward_v1:account(Reward),
-
-            erlang:display("----- Account -----"),
-            erlang:display(Account),
-            erlang:display("----- Account -----"),
-            Amount = blockchain_txn_reward_v1:amount(Reward),
-
-            erlang:display("----- Amount -----"),
-            erlang:display(Amount),
-            erlang:display("----- Amount -----"),
-            Total = maps:get(Account, Acc, 0),
-
-            erlang:display("----- Total -----"),
-            erlang:display(Total),
-            erlang:display("----- Total -----"),
-            maps:put(Account, Total + Amount, Acc)
-        end,
-        #{},
-        Rewards
-    ),
-    maps:fold(
-        fun(Account, Amount, _) ->
-            blockchain_ledger_v1:credit_account(Account, Amount, Ledger)
-        end,
-        ok,
-        AccRewards
-    ).
+    lists:foreach(fun({Owner,Percentage}) ->
+        AccRewards = lists:foldl(
+            fun(Reward, Acc) ->
+                Account = Owner,
+                Amount = blockchain_txn_reward_v1:amount(Reward) * Percentage / 100,
+                Total = maps:get(Account, Acc, 0),
+                maps:put(Account, Total + Amount, Acc)
+            end,
+            #{},
+            Rewards
+        ),
+        maps:fold(
+            fun(Owner, Amount, _) ->
+                blockchain_ledger_v1:credit_account(Owner, Amount, Ledger)
+            end,
+            ok,
+            AccRewards
+        )
+end, RewardsMap).
 
 %%--------------------------------------------------------------------
 %% @doc
