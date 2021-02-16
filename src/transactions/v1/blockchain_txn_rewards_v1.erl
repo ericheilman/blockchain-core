@@ -135,7 +135,7 @@ absorb(Txn, Chain) ->
         fun(Reward, Acc) ->
             Gateway = blockchain_txn_reward_v1:gateway(Reward),
             GatewayInfo = blockchain_ledger_v1:find_gateway_info(Gateway,Ledger),
-            erlang:display(GatewayInfo),
+            erlang:display(blockchain_ledger_gateway_v2:rewards_map(GatewayInfo)),
             Account = blockchain_txn_reward_v1:account(Reward),
             Amount = blockchain_txn_reward_v1:amount(Reward),
             Total = maps:get(Account, Acc, 0),
