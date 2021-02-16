@@ -119,7 +119,7 @@ owner_address(Gateway) ->
 -spec owner_address(OwnerAddress :: libp2p_crypto:pubkey_bin(),
                     Gateway :: gateway()) -> gateway().
 owner_address(OwnerAddress, Gateway) ->
-  Gateway#gateway_v2{owner_address = OwnerAddress}.
+    Gateway#gateway_v2{owner_address = OwnerAddress}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -135,7 +135,7 @@ location(Gateway) ->
 %%--------------------------------------------------------------------
 -spec location(Location :: pos_integer(), Gateway :: gateway()) -> gateway().
 location(Location, Gateway) ->
-    Gateway#gateway_v2{location = Location}.
+    Gateway#gateway_v2{location=Location}.
 
 version(Gateway) ->
     Gateway#gateway_v2.version.
@@ -217,22 +217,21 @@ get_owner_split(Gateway, OwnerAddress) ->
             Height :: pos_integer(),
             Ledger :: blockchain_ledger_v2:ledger()) -> {float(), float(), float()}.
 score(Address,
-      #gateway_v2{alpha = Alpha, beta = Beta, delta = Delta},
+      #gateway_v2{alpha=Alpha, beta=Beta, delta=Delta},
       Height,
       Ledger) ->
     blockchain_score_cache:fetch({Address, Alpha, Beta, Delta, Height},
-    fun() ->
-      {ok, AlphaDecay} = blockchain:config(?alpha_decay, Ledger),
-      {ok, BetaDecay} = blockchain:config(?beta_decay, Ledger),
-      {ok, MaxStaleness} = blockchain:config(?max_staleness, Ledger),
-      NewAlpha = normalize_float(scale_shape_param(Alpha - decay(AlphaDecay, Height - Delta, MaxStaleness))),
-      NewBeta = normalize_float(scale_shape_param(Beta - decay(BetaDecay, Height - Delta, MaxStaleness))),
-      RV1 = normalize_float(erlang_stats:qbeta(0.25, NewAlpha, NewBeta)),
-      RV2 = normalize_float(erlang_stats:qbeta(0.75, NewAlpha, NewBeta)),
-      IQR = normalize_float(RV2 - RV1),
-      Mean = normalize_float(1 / (1 + NewBeta / NewAlpha)),
-      {NewAlpha, NewBeta, normalize_float(Mean * (1 - IQR))}
-    end).
+                                 fun() ->
+                                         {ok, AlphaDecay} = blockchain:config(?alpha_decay, Ledger),
+                                         {ok, BetaDecay} = blockchain:config(?beta_decay, Ledger),
+                                         {ok, MaxStaleness} = blockchain:config(?max_staleness, Ledger),
+                                         NewAlpha = normalize_float(scale_shape_param(Alpha - decay(AlphaDecay, Height - Delta, MaxStaleness))),
+                                         NewBeta = normalize_float(scale_shape_param(Beta - decay(BetaDecay, Height - Delta, MaxStaleness))),
+                                         RV1 = normalize_float(erlang_stats:qbeta(0.25, NewAlpha, NewBeta)),
+                                         RV2 = normalize_float(erlang_stats:qbeta(0.75, NewAlpha, NewBeta)),
+                                         IQR = normalize_float(RV2 - RV1),
+                                         {NewAlpha, NewBeta, normalize_float(Mean * (1 - IQR))}
+                                 end).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -242,17 +241,17 @@ score(Address,
 %%--------------------------------------------------------------------
 -spec decay(float(), pos_integer(), pos_integer()) -> float().
 decay(K, Staleness, MaxStaleness) when Staleness =< MaxStaleness ->
-  math:exp(K * Staleness) - 1;
+    math:exp(K * Staleness) - 1;
 decay(_, _, _) ->
-  %% Basically infinite decay at this point
-  math:exp(709).
+    %% Basically infinite decay at this point
+    math:exp(709).
 
 -spec scale_shape_param(float()) -> float().
 scale_shape_param(ShapeParam) ->
-  case ShapeParam =< 1.0 of
-    true -> 1.0;
-    false -> ShapeParam
-  end.
+    case ShapeParam =< 1.0 of
+      true -> 1.0;
+      false -> ShapeParam
+    end.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -260,7 +259,7 @@ scale_shape_param(ShapeParam) ->
 %%--------------------------------------------------------------------
 -spec alpha(Gateway :: gateway()) -> float().
 alpha(Gateway) ->
-  Gateway#gateway_v2.alpha.
+    Gateway#gateway_v2.alpha.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -268,7 +267,7 @@ alpha(Gateway) ->
 %%--------------------------------------------------------------------
 -spec beta(Gateway :: gateway()) -> float().
 beta(Gateway) ->
-  Gateway#gateway_v2.beta.
+    Gateway#gateway_v2.beta.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -276,7 +275,7 @@ beta(Gateway) ->
 %%--------------------------------------------------------------------
 -spec delta(Gateway :: gateway()) -> undefined | non_neg_integer().
 delta(Gateway) ->
-  Gateway#gateway_v2.delta.
+    Gateway#gateway_v2.delta.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -284,9 +283,9 @@ delta(Gateway) ->
 %%--------------------------------------------------------------------
 -spec set_alpha_beta_delta(Alpha :: float(), Beta :: float(), Delta :: non_neg_integer(), Gateway :: gateway()) -> gateway().
 set_alpha_beta_delta(Alpha, Beta, Delta, Gateway) ->
-  Gateway#gateway_v2{alpha = normalize_float(scale_shape_param(Alpha)),
-    beta = normalize_float(scale_shape_param(Beta)),
-    delta = Delta}.
+    Gateway#gateway_v2{alpha = normalize_float(scale_shape_param(Alpha)),
+      beta = normalize_float(scale_shape_param(Beta)),
+      delta = Delta}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -294,7 +293,7 @@ set_alpha_beta_delta(Alpha, Beta, Delta, Gateway) ->
 %%--------------------------------------------------------------------
 -spec last_poc_challenge(Gateway :: gateway()) -> undefined | non_neg_integer().
 last_poc_challenge(Gateway) ->
-  Gateway#gateway_v2.last_poc_challenge.
+    Gateway#gateway_v2.last_poc_challenge.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -302,7 +301,7 @@ last_poc_challenge(Gateway) ->
 %%--------------------------------------------------------------------
 -spec last_poc_challenge(LastPocChallenge :: non_neg_integer(), Gateway :: gateway()) -> gateway().
 last_poc_challenge(LastPocChallenge, Gateway) ->
-  Gateway#gateway_v2{last_poc_challenge = LastPocChallenge}.
+    Gateway#gateway_v2{last_poc_challenge = LastPocChallenge}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -310,7 +309,7 @@ last_poc_challenge(LastPocChallenge, Gateway) ->
 %%--------------------------------------------------------------------
 -spec last_poc_onion_key_hash(Gateway :: gateway()) -> undefined | binary().
 last_poc_onion_key_hash(Gateway) ->
-  Gateway#gateway_v2.last_poc_onion_key_hash.
+    Gateway#gateway_v2.last_poc_onion_key_hash.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -318,7 +317,7 @@ last_poc_onion_key_hash(Gateway) ->
 %%--------------------------------------------------------------------
 -spec last_poc_onion_key_hash(LastPocOnionKeyHash :: binary(), Gateway :: gateway()) -> gateway().
 last_poc_onion_key_hash(LastPocOnionKeyHash, Gateway) ->
-  Gateway#gateway_v2{last_poc_onion_key_hash = LastPocOnionKeyHash}.
+    Gateway#gateway_v2{last_poc_onion_key_hash = LastPocOnionKeyHash}.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -326,7 +325,7 @@ last_poc_onion_key_hash(LastPocOnionKeyHash, Gateway) ->
 %%--------------------------------------------------------------------
 -spec nonce(Gateway :: gateway()) -> non_neg_integer().
 nonce(Gateway) ->
-  Gateway#gateway_v2.nonce.
+    Gateway#gateway_v2.nonce.
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -334,125 +333,125 @@ nonce(Gateway) ->
 %%--------------------------------------------------------------------
 -spec nonce(Nonce :: non_neg_integer(), Gateway :: gateway()) -> gateway().
 nonce(Nonce, Gateway) ->
-  Gateway#gateway_v2{nonce = Nonce}.
+    Gateway#gateway_v2{nonce = Nonce}.
 
 -spec print(Address :: libp2p_crypto:pubkey_bin(), Gateway :: gateway(),
-    Ledger :: blockchain_ledger_v1:ledger()) -> list().
+            Ledger :: blockchain_ledger_v1:ledger()) -> list().
 print(Address, Gateway, Ledger) ->
   print(Address, Gateway, Ledger, false).
 
 -spec print(Address :: libp2p_crypto:pubkey_bin(), Gateway :: gateway(),
     Ledger :: blockchain_ledger_v1:ledger(), boolean()) -> list().
 print(Address, Gateway, Ledger, Verbose) ->
-  %% TODO: This is annoying but it makes printing happy on the CLI
-  UndefinedHandleFunc =
-    fun(undefined) -> "undefined";
-      (I) -> I
-    end,
-  {ok, Height} = blockchain_ledger_v1:current_height(Ledger),
-  PocUndef =
-    fun(undefined) -> "undefined";
-      (I) -> Height - I
-    end,
-  Scoring =
-    case Verbose of
-      true ->
-        {NewAlpha, NewBeta, Score} = score(Address, Gateway, Height, Ledger),
-        [
-          {score, Score},
-          {alpha, alpha(Gateway)},
-          {new_alpha, NewAlpha},
-          {beta, beta(Gateway)},
-          {new_beta, NewBeta},
-          {delta, Height - delta(Gateway)}
-        ];
-      _ -> []
-    end,
-  [
-    {owner_address, libp2p_crypto:pubkey_bin_to_p2p(owner_address(Gateway))},
-    {location, UndefinedHandleFunc(location(Gateway))},
-    {last_poc_challenge, PocUndef(last_poc_challenge(Gateway))},
-    {nonce, nonce(Gateway)}
-  ] ++ Scoring.
+    %% TODO: This is annoying but it makes printing happy on the CLI
+    UndefinedHandleFunc =
+        fun(undefined) -> "undefined";
+           (I) -> I
+        end,
+    {ok, Height} = blockchain_ledger_v1:current_height(Ledger),
+    PocUndef =
+        fun(undefined) -> "undefined";
+           (I) -> Height - I
+        end,
+    Scoring =
+        case Verbose of
+            true ->
+                {NewAlpha, NewBeta, Score} = score(Address, Gateway, Height, Ledger),
+                [
+                  {score, Score},
+                  {alpha, alpha(Gateway)},
+                  {new_alpha, NewAlpha},
+                  {beta, beta(Gateway)},
+                  {new_beta, NewBeta},
+                  {delta, Height - delta(Gateway)}
+                ];
+            _ -> []
+        end,
+    [
+     {owner_address, libp2p_crypto:pubkey_bin_to_p2p(owner_address(Gateway))},
+     {location, UndefinedHandleFunc(location(Gateway))},
+     {last_poc_challenge, PocUndef(last_poc_challenge(Gateway))},
+     {nonce, nonce(Gateway)}
+    ] ++ Scoring.
 
 add_witness({poc_receipt,
-  WitnessAddress,
-  WitnessGW = #gateway_v2{nonce = Nonce},
-  POCWitness,
-  Gateway = #gateway_v2{witnesses = Witnesses}}) ->
-  RSSI = blockchain_poc_receipt_v1:signal(POCWitness),
-  TS = blockchain_poc_receipt_v1:timestamp(POCWitness),
-  Freq = blockchain_poc_receipt_v1:frequency(POCWitness),
-  case lists:keytake(WitnessAddress, 1, Witnesses) of
-    {value, {_, Witness = #witness{nonce = Nonce, count = Count, hist = Hist}}, Witnesses1} ->
-      %% nonce is the same, increment the count
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        Witness#witness{count = Count + 1,
-          hist = update_histogram(RSSI, Hist),
-          recent_time = TS}}
-        | Witnesses1])};
-    _ ->
-      %% nonce mismatch or first witnesses for this peer
-      %% replace any old witness record with this new one
-      Histogram = create_histogram(WitnessGW, Gateway, Freq),
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        #witness{count = 1,
-          nonce = Nonce,
-          hist = update_histogram(RSSI, Histogram),
-          first_time = TS,
-          recent_time = TS}}
-        | Witnesses])}
-  end;
+             WitnessAddress,
+             WitnessGW = #gateway_v2{nonce=Nonce},
+             POCWitness,
+             Gateway = #gateway_v2{witnesses=Witnesses}}) ->
+    RSSI = blockchain_poc_receipt_v1:signal(POCWitness),
+    TS = blockchain_poc_receipt_v1:timestamp(POCWitness),
+    Freq = blockchain_poc_receipt_v1:frequency(POCWitness),
+    case lists:keytake(WitnessAddress, 1, Witnesses) of
+        {value, {_, Witness=#witness{nonce=Nonce, count=Count, hist=Hist}}, Witnesses1} ->
+            %% nonce is the same, increment the count
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      Witness#witness{count=Count + 1,
+                                                                      hist=update_histogram(RSSI, Hist),
+                                                                      recent_time=TS}}
+                                                     | Witnesses1])};
+        _ ->
+            %% nonce mismatch or first witnesses for this peer
+            %% replace any old witness record with this new one
+            Histogram = create_histogram(WitnessGW, Gateway, Freq),
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      #witness{count=1,
+                                                               nonce=Nonce,
+                                                               hist=update_histogram(RSSI, Histogram),
+                                                               first_time=TS,
+                                                               recent_time=TS}}
+                                                     | Witnesses])}
+    end;
 add_witness({poc_witness,
-  WitnessAddress,
-  WitnessGW = #gateway_v2{nonce = Nonce},
-  POCWitness,
-  Gateway = #gateway_v2{witnesses = Witnesses}}) ->
-  RSSI = blockchain_poc_witness_v1:signal(POCWitness),
-  TS = blockchain_poc_witness_v1:timestamp(POCWitness),
-  Freq = blockchain_poc_witness_v1:frequency(POCWitness),
-  case lists:keytake(WitnessAddress, 1, Witnesses) of
-    {value, {_, Witness = #witness{nonce = Nonce, count = Count, hist = Hist}}, Witnesses1} ->
-      %% nonce is the same, increment the count
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        Witness#witness{count = Count + 1,
-          hist = update_histogram(RSSI, Hist),
-          recent_time = TS}}
-        | Witnesses1])};
-    _ ->
-      %% nonce mismatch or first witnesses for this peer
-      %% replace any old witness record with this new one
-      Histogram = create_histogram(WitnessGW, Gateway, Freq),
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        #witness{count = 1,
-          nonce = Nonce,
-          hist = update_histogram(RSSI, Histogram),
-          first_time = TS,
-          recent_time = TS}}
-        | Witnesses])}
-  end.
+              WitnessAddress,
+             WitnessGW = #gateway_v2{nonce=Nonce},
+             POCWitness,
+             Gateway = #gateway_v2{witnesses=Witnesses}}) ->
+    RSSI = blockchain_poc_witness_v1:signal(POCWitness),
+    TS = blockchain_poc_witness_v1:timestamp(POCWitness),
+    Freq = blockchain_poc_witness_v1:frequency(POCWitness),
+    case lists:keytake(WitnessAddress, 1, Witnesses) of
+        {value, {_, Witness=#witness{nonce=Nonce, count=Count, hist=Hist}}, Witnesses1} ->
+            %% nonce is the same, increment the count
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      Witness#witness{count=Count + 1,
+                                                                      hist=update_histogram(RSSI, Hist),
+                                                                      recent_time=TS}}
+                                                     | Witnesses1])};
+        _ ->
+            %% nonce mismatch or first witnesses for this peer
+            %% replace any old witness record with this new one
+            Histogram = create_histogram(WitnessGW, Gateway, Freq),
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      #witness{count=1,
+                                                               nonce=Nonce,
+                                                               hist=update_histogram(RSSI, Histogram),
+                                                               first_time=TS,
+                                                               recent_time=TS}}
+                                                     | Witnesses])}
+    end.
 
 add_witness(WitnessAddress,
-    WitnessGW = #gateway_v2{nonce = Nonce},
-    undefined,
-    undefined,
-    Gateway = #gateway_v2{witnesses = Witnesses}) ->
-  %% NOTE: This clause is for next hop receipts (which are also considered witnesses) but have no signal and timestamp
-  case lists:keytake(WitnessAddress, 1, Witnesses) of
-    {value, {_, Witness = #witness{nonce = Nonce, count = Count}}, Witnesses1} ->
-      %% nonce is the same, increment the count
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        Witness#witness{count = Count + 1}}
-        | Witnesses1])};
-    _ ->
-      %% nonce mismatch or first witnesses for this peer
-      %% replace any old witness record with this new one
-      Gateway#gateway_v2{witnesses = lists:sort([{WitnessAddress,
-        #witness{count = 1,
-          nonce = Nonce,
-          hist = create_histogram(WitnessGW, Gateway)}}
-        | Witnesses])}
-  end;
+            WitnessGW = #gateway_v2{nonce=Nonce},
+            undefined,
+            undefined,
+            Gateway = #gateway_v2{witnesses=Witnesses}) ->
+    %% NOTE: This clause is for next hop receipts (which are also considered witnesses) but have no signal and timestamp
+    case lists:keytake(WitnessAddress, 1, Witnesses) of
+        {value, {_, Witness=#witness{nonce=Nonce, count=Count}}, Witnesses1} ->
+            %% nonce is the same, increment the count
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      Witness#witness{count=Count + 1}}
+                                                     | Witnesses1])};
+        _ ->
+            %% nonce mismatch or first witnesses for this peer
+            %% replace any old witness record with this new one
+            Gateway#gateway_v2{witnesses=lists:sort([{WitnessAddress,
+                                                      #witness{count=1,
+                                                               nonce=Nonce,
+                                                               hist=create_histogram(WitnessGW, Gateway)}}
+                                                     | Witnesses])}
+    end;
 add_witness(WitnessAddress,
     WitnessGW = #gateway_v2{nonce = Nonce},
     RSSI,
