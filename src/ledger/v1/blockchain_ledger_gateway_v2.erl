@@ -179,8 +179,6 @@ get_splits(Gateway) ->
   {_, Splits} = lists:unzip(Gateway#gateway_v2.rewards_map),
   Splits.
 
-%% implement a sum function that ensures splits add up to 100
-%% sort reward map list
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> gateway().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
   RewardsMap = lists:keysort(2,lists:keyreplace(OwnerAddress,1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
@@ -198,8 +196,6 @@ get_owners(Gateway) ->
 -spec get_owner_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> rewards_map() | undefined.
 get_owner_split(Gateway, OwnerAddress) ->
   lists:keyfind(OwnerAddress,1,Gateway#gateway_v2.rewards_map).
-
-
 
 
 %%--------------------------------------------------------------------
