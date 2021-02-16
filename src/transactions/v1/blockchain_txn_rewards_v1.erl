@@ -129,17 +129,42 @@ is_valid(Txn, Chain) ->
 %%--------------------------------------------------------------------
 -spec absorb(txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
 absorb(Txn, Chain) ->
+
+%%
+
+  %%  lists:foreach(fun({{Owner, Address}, {Index, {Alpha, Beta}}}) ->
+    %%                      ok = blockchain_ledger_v1:add_gateway(Owner, Address, Index, 0, Ledger1),
+      %%                    ok = blockchain_ledger_v1:update_gateway_score(Address, {Alpha, Beta}, Ledger1)
+        %%          end, lists:zip(OwnerAndGateways, ScoredIndices)),
+
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
     AccRewards = lists:foldl(
-        fun(Reward, Acc) ->
-            Account = blockchain_txn_reward_v1:account(Reward),
-           %%  Gateway = blockchain_txn_reward_v1:gateway(Reward),
-            Amount = blockchain_txn_reward_v1:amount(Reward),
-	   %% Split = blockchain_ledger_gateway_v2:get_split(Gateway, Account),
-           %% Amount = (blockchain_txn_reward_v1:amount(Reward) * Split) / 100,
+    erlang:display("----- Rewards -----"),
+    erlang:display(Rewards),
+    erlang:display("----- Rewards -----"),
 
+
+        fun(Reward, Acc) ->
+            erlang:display("----- Reward -----"),
+            erlang:display(Reward),
+            erlang:display("----- Reward -----"),
+
+            Account = blockchain_txn_reward_v1:account(Reward),
+
+            erlang:display("----- Account -----"),
+            erlang:display(Account),
+            erlang:display("----- Account -----"),
+            Amount = blockchain_txn_reward_v1:amount(Reward),
+
+            erlang:display("----- Amount -----"),
+            erlang:display(Amount),
+            erlang:display("----- Amount -----"),
             Total = maps:get(Account, Acc, 0),
+
+            erlang:display("----- Total -----"),
+            erlang:display(Total),
+            erlang:display("----- Total -----"),
             maps:put(Account, Total + Amount, Acc)
         end,
         #{},
