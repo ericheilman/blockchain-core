@@ -44,6 +44,7 @@
     find_gateway_location/2,
     find_gateway_owner/2,
     find_gateway_last_challenge/2,
+    find_gateway_rewards_map/2,
     %% todo add more here
 
     gateway_cache_get/2,
@@ -846,10 +847,12 @@ load_gateways(Gws, Ledger) ->
               Location = blockchain_ledger_gateway_v2:location(Gw),
               LastChallenge = blockchain_ledger_gateway_v2:last_poc_challenge(Gw),
               Owner = blockchain_ledger_gateway_v2:owner_address(Gw),
+              RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gw),
               cache_put(Ledger, GwDenormCF, <<Address/binary, "-loc">>, term_to_binary(Location)),
               cache_put(Ledger, GwDenormCF, <<Address/binary, "-last-challenge">>,
                         term_to_binary(LastChallenge)),
               cache_put(Ledger, GwDenormCF, <<Address/binary, "-owner">>, Owner),
+              cache_put(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, RewardsMap),
               cache_put(Ledger, AGwsCF, Address, Bin)
       end,
       maps:from_list(Gws)),
@@ -1044,6 +1047,25 @@ find_gateway_last_challenge(Address, Ledger) ->
             end
     end.
 
+find_gateway_rewards_map(Address,  Ledger) ->
+    AGwsCF = active_gateways_cf(Ledger),
+    GwDenormCF = gw_denorm_cf(Ledger),
+    case cache_get(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, []) of
+        {ok, RewardsMap} ->
+            {ok, RewardsMap};
+        _ ->
+            case cache_get(Ledger, AGwsCF, Address, []) of
+                {ok, BinGw} ->
+                    Gw = blockchain_ledger_gateway_v2:deserialize(BinGw),
+                    RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gw),
+                    {ok, RewardsMap};
+                not_found ->
+                    {error, not_found};
+                Error ->
+                    Error
+            end
+    end.
+
 -spec gateway_cache_get(libp2p_crypto:pubkey_bin(), ledger()) ->
                                {ok, blockchain_ledger_gateway_v2:gateway()} |
                                spillover |
@@ -1160,10 +1182,12 @@ update_gateway(Gw, GwAddr, Ledger) ->
     Location = blockchain_ledger_gateway_v2:location(Gw),
     LastChallenge = blockchain_ledger_gateway_v2:last_poc_challenge(Gw),
     Owner = blockchain_ledger_gateway_v2:owner_address(Gw),
+    RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gw),
     cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-loc">>, term_to_binary(Location)),
     cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-last-challenge">>,
               term_to_binary(LastChallenge)),
-    cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-owner">>, Owner).
+    cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-owner">>, Owner),
+    cache_put(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, RewardsMap).
 
 -spec add_gateway_location(libp2p_crypto:pubkey_bin(), non_neg_integer(), non_neg_integer(), ledger()) -> ok | {error, no_active_gateway}.
 add_gateway_location(GatewayAddress, Location, Nonce, Ledger) ->
@@ -3341,10 +3365,14 @@ bootstrap_gw_denorm(Ledger) ->
               Location = blockchain_ledger_gateway_v2:location(Gw),
               LastChallenge = blockchain_ledger_gateway_v2:last_poc_challenge(Gw),
               Owner = blockchain_ledger_gateway_v2:owner_address(Gw),
+              RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gw),
+
               cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-loc">>, term_to_binary(Location)),
               cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-last-challenge">>,
                         term_to_binary(LastChallenge)),
-              cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-owner">>, Owner)
+              cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-owner">>, Owner),
+              cache_put(Ledger, GwDenormCF, <<GwAddr/binary, "-rewardsmap">>, RewardsMap)
+
       end,
       ignore).
 
