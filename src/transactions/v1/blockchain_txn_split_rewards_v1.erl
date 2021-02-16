@@ -250,11 +250,11 @@ is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
                   {fun() -> buyer_nonce_correct(Txn, Ledger) end,
                                           {error, wrong_buyer_nonce}},
                   {fun() -> buyer_has_enough_hnt(Txn, Ledger) end,
-                                          {error, buyer_insufficient_hnt_balance}}],
+                                          {error, buyer_insufficient_hnt_balance}},
                   {fun() -> gateway_not_stale(Txn, Ledger) end,
                                           {error, gateway_too_stale}},
                   {fun() -> txn_fee_valid(Txn, Chain, AreFeesEnabled) end,
-                                          {error, wrong_txn_fee}},
+                                          {error, wrong_txn_fee}}],
     blockchain_utils:fold_condition_checks(Conditions).
 
 %% This only handles the case where the buyer already owns a %. Has to be reworked to 
@@ -380,7 +380,7 @@ new_4_test() ->
                                                 percentage = 50,
                                                 amount_to_seller=0,
                                                 fee=0},
-    ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 50)).
+    ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>,1, 50)).
 
 new_5_test() ->
     Tx = #blockchain_txn_split_rewards_v1_pb{gateway= <<"gateway">>,
@@ -395,49 +395,49 @@ new_5_test() ->
     ?assertEqual(Tx, new(<<"gateway">>, <<"seller">>, <<"buyer">>, 100, 100)).
 
 gateway_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1,20),
     ?assertEqual(<<"gateway">>, gateway(Tx)).
 
 seller_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 30),
     ?assertEqual(<<"seller">>, seller(Tx)).
 
 seller_signature_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 40),
     ?assertEqual(<<>>, seller_signature(Tx)).
 
 buyer_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 50),
     ?assertEqual(<<"buyer">>, buyer(Tx)).
 
 buyer_signature_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 40),
     ?assertEqual(<<>>, buyer_signature(Tx)).
 
 amount_to_seller_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 100),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 50, 100),
     ?assertEqual(100, amount_to_seller(Tx)).
 
 fee_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 100),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 1, 50, 100),
     ?assertEqual(20, fee(fee(Tx, 20))).
 
 sign_seller_test() ->
     #{public := PubKey, secret := PrivKey} = libp2p_crypto:generate_keys(ecc_compact),
-    Tx = new(<<"gateway">>, libp2p_crypto:pubkey_to_bin(PubKey), <<"buyer">>, 1),
+    Tx = new(<<"gateway">>, libp2p_crypto:pubkey_to_bin(PubKey), <<"buyer">>, 1, 40),
     SigFun = libp2p_crypto:mk_sig_fun(PrivKey),
     Tx0 = sign(Tx, SigFun),
     ?assert(is_valid_seller(Tx0)).
 
 sign_buyer_test() ->
     #{public := PubKey, secret := PrivKey} = libp2p_crypto:generate_keys(ecc_compact),
-    Tx = new(<<"gateway">>, <<"seller">>, libp2p_crypto:pubkey_to_bin(PubKey), 1),
+    Tx = new(<<"gateway">>, <<"seller">>, libp2p_crypto:pubkey_to_bin(PubKey), 1, 60),
     SigFun = libp2p_crypto:mk_sig_fun(PrivKey),
     Tx0 = sign_buyer(Tx, SigFun),
     ?assert(is_valid_buyer(Tx0)).
 
 to_json_test() ->
-    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 50, 100),
+    Tx = new(<<"gateway">>, <<"seller">>, <<"buyer">>, 50, 40, 100),
     Json = to_json(Tx, []),
     ?assert(lists:all(fun(K) -> maps:is_key(K, Json) end,
                       [type, hash, gateway, seller, buyer, buyer_nonce, percentage, amount_to_seller, fee])).
