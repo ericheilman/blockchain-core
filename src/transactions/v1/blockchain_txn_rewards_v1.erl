@@ -137,8 +137,9 @@ absorb(Txn, Chain) ->
   %%          end, lists:zip(OwnerAndGateways, ScoredIndices)),
 
     Ledger = blockchain:ledger(Chain),
+    Reward = ?MODULE:reward(Txn),
     Rewards = ?MODULE:rewards(Txn),
-    Address = blockchain_txn_reward_v1:gateway(Rewards),
+    Address = blockchain_txn_reward_v1:gateway(Reward),
     Gateway = blockchain_ledger_v1:find_gateway_info(Address,Ledger),
     RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
     erlang:display(" "),
