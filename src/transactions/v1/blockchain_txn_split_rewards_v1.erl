@@ -218,7 +218,7 @@ is_valid_split_total(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
      OldSellerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Buyer),
      Gw1 = blockchain_ledger_gateway_v2:set_split(Gateway,Seller,OldOwnerPercentage - Percentage),
      Gw2 = blockchain_ledger_gateway_v2:set_split(Gw1,Buyer,OldSellerPercentage + Percentage),
-     PostSplitPercentage = sum(blockchain_ledger_gateway_v2:get_splits(Gw2)),
+     PostSplitPercentage = lists:sum(blockchain_ledger_gateway_v2:get_splits(Gw2)),
      if PostSplitPercentage =/= 100 -> false;
         true -> true
      end.
