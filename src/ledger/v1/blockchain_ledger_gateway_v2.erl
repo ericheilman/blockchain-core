@@ -479,29 +479,30 @@ add_witness(WitnessAddress,
                                                      | Witnesses])}
     end.
 
-create_histogram(#gateway_v2{location=WitnessLoc}=_WitnessGW,
-                 #gateway_v2{location=GatewayLoc}=_Gateway,
-                 Freq) ->
-    %% Get the free space path loss
-    FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc, Freq),
-    MinRcvSig = blockchain_utils:min_rcv_sig(FreeSpacePathLoss),
-    %% Maximum number of bins in the histogram
-    NumBins = 10,
-    %% Spacing between histogram keys (x axis)
-    StepSize = ((-132 + abs(MinRcvSig))/(NumBins - 1)),
-    %% Construct a custom histogram around the expected path loss
-    lists:sort([ {28, 0} | [ {trunc(MinRcvSig + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).
+create_histogram(#gateway_v2{location = WitnessLoc} = _WitnessGW,
+    #gateway_v2{location = GatewayLoc} = _Gateway,
+    Freq) ->
+  %% Get the free space path loss
+  FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc, Freq),
+  MinRcvSig = blockchain_utils:min_rcv_sig(FreeSpacePathLoss),
+  %% Maximum number of bins in the histogram
+  NumBins = 10,
+  %% Spacing between histogram keys (x axis)
+  StepSize = ((-132 + abs(MinRcvSig)) / (NumBins - 1)),
+  %% Construct a custom histogram around the expected path loss
+  lists:sort([{28, 0} | [{trunc(MinRcvSig + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).
 
-create_histogram(#gateway_v2{location=WitnessLoc}=_WitnessGW,
-                 #gateway_v2{location=GatewayLoc}=_Gateway) ->
-    %% Get the free space path loss
-    FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc),
-    %% Maximum number of bins in the histogram
-    NumBins = 10,
-    %% Spacing between histogram keys (x axis)
-    StepSize = ((-132 + abs(FreeSpacePathLoss))/(NumBins - 1)),
-    %% Construct a custom histogram around the expected path loss
-    lists:sort([ {28, 0} | [ {trunc(FreeSpacePathLoss + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).eq(0, (NumBins - 1))]]).
+create_histogram(#gateway_v2{location = WitnessLoc} = _WitnessGW,
+    #gateway_v2{location = GatewayLoc} = _Gateway) ->
+  %% Get the free space path loss
+  FreeSpacePathLoss = blockchain_utils:free_space_path_loss(WitnessLoc, GatewayLoc),
+  %% Maximum number of bins in the histogram
+  NumBins = 10,
+  %% Spacing between histogram keys (x axis)
+  StepSize = ((-132 + abs(FreeSpacePathLoss)) / (NumBins - 1)),
+  %% Construct a custom histogram around the expected path loss
+  lists:sort([{28, 0} | [{trunc(FreeSpacePathLoss + (N * StepSize)), 0} || N <- lists:seq(0, (NumBins - 1))]]).
+
 
 update_histogram(Val, Histogram0) ->
     Keys = lists:reverse(lists:sort(element(1, lists:unzip(Histogram0)))),
