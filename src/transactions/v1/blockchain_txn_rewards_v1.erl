@@ -137,22 +137,13 @@ absorb(Txn, Chain) ->
   %%          end, lists:zip(OwnerAndGateways, ScoredIndices)),
 
     Ledger = blockchain:ledger(Chain),
-    RewardB = ?MODULE:reward(Txn),
     Rewards = ?MODULE:rewards(Txn),
-    Address = blockchain_txn_reward_v1:gateway(RewardB),
+   %% TxnReward = lists:sort([blockchain_txn_reward_v1:hash(R) || R <- Rewards]),
+    TxnReward = [blockchain_txn_reward_v1:gateway(R) || R <- Rewards],
+
+    Address = blockchain_txn_reward_v1:gateway(TxnReward),
     Gateway = blockchain_ledger_v1:find_gateway_info(Address,Ledger),
     RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
-    erlang:display(" "),
-    erlang:display("----- GATEWAY ----"),
-    erlang:display(Gateway),
-    erlang:display("----- GATEWAY ----"),
-    erlang:display(" "),
-    erlang:display(" "),
-    erlang:display(" "),
-    erlang:display("----- REWARDS MAP ----"),
-    erlang:display(RewardsMap),
-    erlang:display("----- REWARDS MAP ----"),
-    erlang:display(" "),
 
     lists:foreach(fun({Owner,Percentage}) ->
         AccRewards = lists:foldl(
