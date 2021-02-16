@@ -138,8 +138,8 @@ absorb(Txn, Chain) ->
 
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
-    Address = ?MODULE:gateway(Txn),
-    Gateway = blockchain_ledger_v1:gateway_cache_get(Address,Ledger),
+    Address = blockchain_txn_reward_v1:gateway(Rewards),
+    Gateway = blockchain_ledger_v1:find_gateway_info(Address,Ledger),
 
     RewardsMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
 
