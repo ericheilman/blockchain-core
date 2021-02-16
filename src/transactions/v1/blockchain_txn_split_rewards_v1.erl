@@ -15,7 +15,7 @@
 -endif.
 
 -export([
-         new/4, new/5,
+         new/5, new/6,
          gateway/1,
          seller/1,
          buyer/1,
