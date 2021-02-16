@@ -194,7 +194,11 @@ set_split(Gateway, OwnerAddress, RewardSplit) ->
   erlang:display("-----------"),
   erlang:display(RewardsMap),
   erlang:display("-----------"),
-  Gateway#gateway_v2{rewards_map = RewardsMap}.
+  Gateway#gateway_v2{rewards_map = RewardsMap},
+  erlang:display("-----------"),
+  erlang:display(Gateway#gateway_v2.rewards_map).
+
+
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
 num_splits(Gateway) ->
@@ -699,10 +703,11 @@ rewards_map_test() ->
   ?assertEqual(get_splits(Gw),[60,40]),
   ?assertEqual(get_split(Gw, owner_address(Gw)), 60),
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 40),
-  ?assertEqual(set_split(Gw,<<"owner_address">>,70),Gw),
   ?assertEqual(get_split(Gw, owner_address(Gw)), 70).
 
-
+rewards_split_test() ->
+  Gw = new(<<"owner_address">>, 12),
+  ?assertEqual(set_split(Gw,owner_address(Gw),70),Gw).
 
 owner_address_test() ->
   Gw = new(<<"owner_address">>, 12),
