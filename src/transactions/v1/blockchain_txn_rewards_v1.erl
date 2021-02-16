@@ -130,12 +130,13 @@ is_valid(Txn, Chain) ->
 -spec absorb(txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
 absorb(Txn, Chain) ->
 
-%%
 
   %%  lists:foreach(fun({{Owner, Address}, {Index, {Alpha, Beta}}}) ->
-    %%                      ok = blockchain_ledger_v1:add_gateway(Owner, Address, Index, 0, Ledger1),
-      %%                    ok = blockchain_ledger_v1:update_gateway_score(Address, {Alpha, Beta}, Ledger1)
-        %%          end, lists:zip(OwnerAndGateways, ScoredIndices)),
+  %%                      ok = blockchain_ledger_v1:add_gateway(Owner, Address, Index, 0, Ledger1),
+  %%                    ok = blockchain_ledger_v1:update_gateway_score(Address, {Alpha, Beta}, Ledger1)
+  %%          end, lists:zip(OwnerAndGateways, ScoredIndices)),
+
+
 
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
@@ -146,7 +147,7 @@ absorb(Txn, Chain) ->
         AccRewards = lists:foldl(
             fun(Reward, Acc) ->
                 Account = Owner,
-                Amount = blockchain_txn_reward_v1:amount(Reward) * Percentage / 100,
+                Amount = (blockchain_txn_reward_v1:amount(Reward) * Percentage) / 100,
                 Total = maps:get(Account, Acc, 0),
                 maps:put(Account, Total + Amount, Acc)
             end,
