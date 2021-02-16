@@ -190,6 +190,10 @@ get_splits(Gateway) ->
 -spec set_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin(), RewardSplit :: non_neg_integer()) -> rewards_map().
 set_split(Gateway, OwnerAddress, RewardSplit) ->
   RewardsMap = lists:keyreplace(OwnerAddress, 1,rewards_map(Gateway),{OwnerAddress,RewardSplit}),
+  erlang:display(Gateway#gateway_v2.rewards_map),
+  erlang:display("-----------"),
+  erlang:display(RewardsMap),
+  erlang:display("-----------"),
   rewards_map(Gateway,RewardsMap).
 
 -spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
