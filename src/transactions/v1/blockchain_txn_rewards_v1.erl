@@ -138,9 +138,7 @@ absorb(Txn, Chain) ->
 
     Ledger = blockchain:ledger(Chain),
     Rewards = ?MODULE:rewards(Txn),
-    erlang:display("---------"),
-    erlang:display(Rewards),
-    erlang:display("---------"),
+
       %% TxnReward = lists:sort([blockchain_txn_reward_v1:hash(R) || R <- Rewards]),
    %% TxnReward = [blockchain_txn_reward_v1:gateway(R) || R <- Rewards],
    %% Address = blockchain_txn_reward_v1:gateway(TxnReward),
@@ -150,6 +148,9 @@ absorb(Txn, Chain) ->
     lists:foreach(fun({Owner,Percentage}) ->
         AccRewards = lists:foldl(
             fun(Reward, Acc) ->
+                erlang:display("---------"),
+                erlang:display(blockchain_txn_reward_v1:gateway(Reward),
+                erlang:display("---------"),
                 Account = Owner,
                 Amount = (blockchain_txn_reward_v1:amount(Reward) * Percentage) / 100,
                 Total = maps:get(Account, Acc, 0),
