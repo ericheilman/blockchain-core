@@ -614,6 +614,7 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
+  RewardsMap = ?MODULE:rewards_map(),
   RewardsMap = lists:foldl(
         fun(Reward, Acc) ->
                 OwnerAddress = lists:sublist(Reward,length(Reward)-1),
