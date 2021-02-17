@@ -614,7 +614,7 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  RewardsMap = rewards_map(Gw),
+  RewardsMap = rewards_map(Gw1),
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
                 case is_list(Reward) of
