@@ -619,12 +619,12 @@ deserialize(<<2, Bin/binary>>) ->
         fun(Reward,RewardsList) ->
                 erlang:display(Reward),
                 case length(Reward) > 0 of
+                    false ->
+                        RewardsList;
                     true ->
                         Percentage = lists:last(Reward),
                         OwnerAddress = lists:droplast(Reward),
-                        RewardsList ++ {OwnerAddress,Percentage};
-                    false ->
-                        RewardsList
+                        RewardsList ++ {OwnerAddress,Percentage}
                 end
         end,
         [],
