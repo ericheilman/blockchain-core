@@ -599,7 +599,7 @@ deserialize(<<2, Bin/binary>>) ->
         Gw
     end,
   Neighbors = neighbors(Gw1),
-  erlang:display(reward_map(Gw1),
+  erlang:display(rewards_map(Gw1)),
   Gw2 = neighbors(lists:usort(Neighbors), Gw1),
   Witnesses = Gw2#gateway_v2.witnesses,
   Witnesses1 =
