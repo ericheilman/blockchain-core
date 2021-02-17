@@ -617,7 +617,7 @@ deserialize(<<2, Bin/binary>>) ->
   RewardsMap = rewards_map(Gw2),
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
-                case is_list(Reward) andalso length(Reward) == 2 of
+                case type(Reward) == blockchain_ledger_gateway_rewards_map of
                     false ->
                         RewardsList;
                     true ->
@@ -629,7 +629,6 @@ deserialize(<<2, Bin/binary>>) ->
         [],
         RewardsMap
   ),
-
   Gw2#gateway_v2{witnesses = Witnesses1,
                 rewards_map = RewardsFinal}.
 
