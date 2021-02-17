@@ -616,10 +616,15 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
   RewardsMap = rewards_map(Gw2),
-  OwnerAddress = lists:droplast(RewardsMap),
-  Percentage = lists:last(RewardsMap),
+  RewardsMap2 = blockchain_ledger_gateway_rewards_map:RewardsMap(),
+  lists:foreach(fun(RewardSplit) ->
+          OwnerAddress = lists:droplast(RewardSplit),
+          Percentage = lists:last(RewardSplit),
+          RewardsMap2 ++ {OwnerAddress,Percentage}
+        end, RewardsMap),
+
   Gw2#gateway_v2{witnesses = Witnesses1,
-                 rewards_map = {OwnerAddress,Percentage}}.
+                 rewards_map = RewardsMap2}.
 
 %% OK to include here, v1 should now be immutable.
 -record(gateway_v1, {
