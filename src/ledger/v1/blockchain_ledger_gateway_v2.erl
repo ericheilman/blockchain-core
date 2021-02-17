@@ -614,7 +614,23 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  RewardsMap = Gw2#gateway_v2.rewards_map,
+  RewardsMap = lists:foldl(
+        fun(Reward, Acc) ->
+                OwnerAddress = lists:sublist(Reward,length(Reward)-1),
+                Percentage = lists:sublist(Reward,length(Reward)-1,length(Reward)),
+                erlang:display("-------"),
+                erlang:display(OwnerAddress),
+                erlang:display(Percentage),
+                RewardsMap2 = maps:get(OwnerAddress, Acc, []),
+                maps:put(OwnerAddress, RewardsMap2, Acc)
+
+        end,
+        #{},
+        RewardsMap
+  ),
+
+
+
   Gw2#gateway_v2{witnesses = Witnesses1,
                 rewards_map = RewardsMap}.
 
