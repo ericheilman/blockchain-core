@@ -620,7 +620,7 @@ deserialize(<<2, Bin/binary>>) ->
   OwnerAddress = lists:nth(1,Gw1),
   RewardsMap =
         case length(rewards_map(Gw1) == 0) of
-            true -> {OwnerAddress,100};
+            true -> [{OwnerAddress,100}];
             false -> rewards_map(Gw1)
         end,
 
