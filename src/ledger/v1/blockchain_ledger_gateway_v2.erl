@@ -617,7 +617,7 @@ deserialize(<<2, Bin/binary>>) ->
     end,
 
   RewardsMap =
-    case length(rewards_map(Gw1) == 0) of
+    case length(rewards_map(Gw1)) == 0 of
         true -> [{<<"owner_address">>,100}];
         false -> rewards_map(Gw1)
     end,
