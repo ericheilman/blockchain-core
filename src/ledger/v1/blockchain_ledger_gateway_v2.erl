@@ -615,9 +615,10 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
   RewardsMap = rewards_map(Gw2),
+
+
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
-                erlang:display(Reward),
                 case length(Reward) > 0 of
                     false ->
                         RewardsList;
