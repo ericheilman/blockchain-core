@@ -615,9 +615,8 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-    RewardsMap = rewards_map(Gw2),
-    Gw2#gateway_v2{witnesses = Witnesses1,
-                 rewards_map = RewardsMap}.
+
+  Gw2#gateway_v2{witnesses = Witnesses1}.
 
 %% OK to include here, v1 should now be immutable.
 -record(gateway_v1, {
