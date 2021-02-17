@@ -621,7 +621,7 @@ deserialize(<<2, Bin/binary>>) ->
                 OwnerAddress = lists:droplast(Reward),
                 RewardsList ++ {OwnerAddress,Percentage}
         end,
-        #{},
+        {},
         RewardsMap
   ),
 
