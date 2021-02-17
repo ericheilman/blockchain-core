@@ -616,7 +616,7 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
     RewardsMap = rewards_map(Gw2),
-    RewardsMap2 = [],
+    RewardsMap2 = rewards_map(Gw1),
     lists:foreach(fun(RewardSplit) ->
         Percentage = lists:last(RewardSplit),
         OwnerAddress = lists:droplast(RewardSplit),
