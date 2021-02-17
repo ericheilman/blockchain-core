@@ -614,7 +614,17 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  Gw2#gateway_v2{witnesses = Witnesses1}.
+    RewardsMap = rewards_map(Gw2),
+    RewardsMap2 = [],
+    lists:foreach(fun(RewardSplit) ->
+        Percentage = lists:last(RewardSplit),
+        OwnerAddress = lists:droplast(RewardSplit),
+        Split = {OwnerAddress,Percentage},
+        RewardsMap2 = RewardsMap2 ++ Split
+    end, RewardsMap),
+
+  Gw2#gateway_v2{witnesses = Witnesses1,
+                rewards_map = RewardsMap2}.
 
 %% OK to include here, v1 should now be immutable.
 -record(gateway_v1, {
