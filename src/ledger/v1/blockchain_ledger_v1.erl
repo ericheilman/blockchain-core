@@ -1052,7 +1052,7 @@ find_gateway_rewards_map(Address,  Ledger) ->
     GwDenormCF = gw_denorm_cf(Ledger),
     case cache_get(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, {}) of
         {ok, RewardsMap} ->
-            {ok, binary_to_term(RewardsMap)};
+            {ok, RewardsMap};
         _ ->
             case cache_get(Ledger, AGwsCF, Address, []) of
                 {ok, BinGw} ->
