@@ -591,12 +591,11 @@ deserialize(<<2, Bin/binary>>) ->
       %% pre-oui upgrade
       13 ->
         L = tuple_to_list(Gw),
-        OwnerAddress = lists:nth(2,L),
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
         neighbors([], G1),
-        rewards_map(G1,{OwnerAddress,100});
+        rewards_map(G1,{lists:nth(2,L),100});
       14 ->
         Gw
     end,
