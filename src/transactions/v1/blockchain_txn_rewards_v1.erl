@@ -135,7 +135,7 @@ absorb(Txn, Chain) ->
     AccRewards = lists:foldl(
         fun(Reward, Acc) ->
             Gateway = blockchain_txn_reward_v1:gateway(Reward),
-            Address = blockchain_ledger_gateway_v2:owner_address(Gateway),
+         %%   Address = blockchain_ledger_gateway_v2:owner_address(Gateway),
             Account = blockchain_txn_reward_v1:account(Reward),
           %%  {ok, RewardsMap} = blockchain_ledger_v1:find_gateway_info(Gateway,Ledger),
          %%   Split = blockchain_ledger_gateway_v2:get_split(Gateway,Account),
