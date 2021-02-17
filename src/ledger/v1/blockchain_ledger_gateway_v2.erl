@@ -618,8 +618,8 @@ deserialize(<<2, Bin/binary>>) ->
   RewardsMap = rewards_map(Gw2),
   RewardsMap2 = [],
   lists:foreach(fun(RewardSplit) ->
-          OwnerAddress = lists:droplast(RewardSplit),
           Percentage = lists:last(RewardSplit),
+          OwnerAddress = lists:droplast(RewardSplit),
           RewardsMap2 = lists:append({OwnerAddress,Percentage})
         end, RewardsMap),
 
