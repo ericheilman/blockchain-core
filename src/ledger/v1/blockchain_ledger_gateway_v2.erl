@@ -615,7 +615,7 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  print(Gw1),
+  erlang:display(Gw1),
   RewardsMap = rewards_map(Gw1),
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
