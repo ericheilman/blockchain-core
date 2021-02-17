@@ -591,6 +591,7 @@ deserialize(<<2, Bin/binary>>) ->
       %% pre-oui upgrade
       13 ->
         L = tuple_to_list(Gw),
+        erlang:display(L),
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
@@ -599,7 +600,6 @@ deserialize(<<2, Bin/binary>>) ->
         Gw
     end,
   Neighbors = neighbors(Gw1),
-  erlang:display(rewards_map(Gw1)),
   Gw2 = neighbors(lists:usort(Neighbors), Gw1),
   Witnesses = Gw2#gateway_v2.witnesses,
   Witnesses1 =
