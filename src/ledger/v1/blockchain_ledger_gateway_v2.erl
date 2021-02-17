@@ -618,7 +618,7 @@ deserialize(<<2, Bin/binary>>) ->
     lists:foreach(fun(RewardSplit) ->
         Percentage = lists:last(RewardSplit),
         OwnerAddress = lists:droplast(RewardSplit),
-        RewardSplit = {OwnerAddress,Percentage}
+        RewardsMap = lists:keyreplace(OwnerAddress,1,RewardSplit,{OwnerAddress,Percentage})
     end, RewardsMap),
 
   Gw2#gateway_v2{witnesses = Witnesses1,
