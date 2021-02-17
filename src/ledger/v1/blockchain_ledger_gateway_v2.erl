@@ -592,7 +592,7 @@ deserialize(<<2, Bin/binary>>) ->
       13 ->
         L = tuple_to_list(Gw),
         Address = lists:nth(2,L),
-        RwMap = {Address,100},
+        RwMap = [{Address,100}],
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
         L2 = lists:append(L1, RwMap),
