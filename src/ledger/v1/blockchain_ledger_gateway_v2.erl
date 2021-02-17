@@ -615,7 +615,7 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
     RewardsMap = rewards_map(Gw1),
-    RewardsTuple = [_],
+    RewardsTuple = [],
 
     lists:foreach(fun(RewardSplit) ->
         OwnerAddress = lists:sublist(RewardSplit,length(RewardSplit)-1),
