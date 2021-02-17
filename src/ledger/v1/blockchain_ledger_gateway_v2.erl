@@ -616,7 +616,7 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
   RewardsMap = rewards_map(Gw2),
-  RewardsMap2 = blockchain_ledger_gateway_rewards_map:RewardsMap(),
+  RewardsMap2 = [],
   lists:foreach(fun(RewardSplit) ->
           OwnerAddress = lists:droplast(RewardSplit),
           Percentage = lists:last(RewardSplit),
