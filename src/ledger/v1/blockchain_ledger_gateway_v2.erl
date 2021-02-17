@@ -615,13 +615,14 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  RewardsMap = rewards_map(Gw2),
-  RewardsMap2 = list({libp2p_crypto:pubkey_bin(), non_neg_integer()}),
-  lists:foreach(fun(RewardSplit) ->
-          Percentage = lists:last(RewardSplit),
-          OwnerAddress = lists:droplast(RewardSplit),
-          RewardsMap2 ++ {OwnerAddress,Percentage}
-        end, RewardsMap),
+    RewardsMap = rewards_map(Gw2),
+    RewardsMap2 = [],
+    lists:foreach(fun(RewardSplit) ->
+        Percentage = lists:last(RewardSplit),
+        OwnerAddress = lists:droplast(RewardSplit),
+        Split = blockchain_ledger_gateway_v2:rewards_map(OwnerAddress,Percentage),
+        RewardsMap2 = RewardsMap2 ++ Split
+    end, RewardsMap),
 
   Gw2#gateway_v2{witnesses = Witnesses1,
                  rewards_map = RewardsMap2}.
