@@ -617,7 +617,7 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  OwnerAddress = lists:nth(1,Gw1),
+  OwnerAddress = lists:nth(2,Gw),
   RewardsMap =
         case length(rewards_map(Gw1) == 0) of
             true -> [{OwnerAddress,100}];
