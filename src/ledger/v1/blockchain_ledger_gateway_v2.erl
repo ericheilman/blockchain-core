@@ -591,11 +591,11 @@ deserialize(<<2, Bin/binary>>) ->
       %% pre-oui upgrade
       13 ->
         L = tuple_to_list(Gw),
-        erlang:display(L),
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
-        neighbors([], G1);
+        neighbors([], G1),
+        rewards_map(G1,{owner_address(Gw),100});
       14 ->
         Gw
     end,
@@ -615,6 +615,7 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
+  print(Gw1),
   RewardsMap = rewards_map(Gw1),
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
