@@ -617,6 +617,8 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
+
+  erlang:display(size(Gw)),
   RewardsMap =
         case length(rewards_map(Gw1) == 0) of
             true -> [{<<"owner_address">>,100}];
