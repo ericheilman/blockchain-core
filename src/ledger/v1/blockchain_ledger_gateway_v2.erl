@@ -615,13 +615,12 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
     RewardsMap = rewards_map(Gw1),
+    RewardsTuple = [_],
 
     lists:foreach(fun(RewardSplit) ->
-        Percentage = lists:last(RewardSplit),
-        OwnerAddress = lists:droplast(RewardSplit),
-        erlang:display("-------"),
-        erlang:display(Percentage),
-        erlang:display(OwnerAddress)
+        OwnerAddress = lists:sublist(RewardSplit,length(RewardSplit)-1),
+        Percentage = lists:droplast(RewardSplit,length(RewardSplit)-1,length(RewardSplit)),
+        RewardsTuple ++ lists:zip(OwnerAddress,Percentage)
     end, RewardsMap),
 
   Gw2#gateway_v2{witnesses = Witnesses1,
