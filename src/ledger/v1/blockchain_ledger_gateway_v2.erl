@@ -617,14 +617,13 @@ deserialize(<<2, Bin/binary>>) ->
   RewardsMap = rewards_map(Gw2),
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
-                [{OwnerAddress, Percentage}] = Reward,
+                Percentage = lists:last(Reward),
+                OwnerAddress = lists:droplast(Reward),
                 RewardsList ++ {OwnerAddress,Percentage}
         end,
         #{},
         RewardsMap
   ),
-
-
 
   Gw2#gateway_v2{witnesses = Witnesses1,
                 rewards_map = RewardsFinal}.
