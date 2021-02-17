@@ -594,7 +594,8 @@ deserialize(<<2, Bin/binary>>) ->
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
-        neighbors([], G1);
+        neighbors([], G1),
+        rewards_map(G1,rewards_map(Gw));
       14 ->
         Gw
     end,
@@ -621,8 +622,8 @@ deserialize(<<2, Bin/binary>>) ->
                     false ->
                         RewardsList;
                     true ->
-                        Percentage = lists:last(Reward),
                         OwnerAddress = lists:sublist(Reward,length(Reward)-1),
+                        Percentage = lists:last(Reward),
                         RewardsList ++ {OwnerAddress,Percentage}
                 end
         end,
