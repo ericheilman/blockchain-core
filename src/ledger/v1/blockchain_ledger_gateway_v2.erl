@@ -595,7 +595,7 @@ deserialize(<<2, Bin/binary>>) ->
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
         neighbors([], G1),
-        rewards_map(G1,rewards_map(Gw));
+        rewards_map(Gw1,rewards_map(Gw));
       14 ->
         Gw
     end,
