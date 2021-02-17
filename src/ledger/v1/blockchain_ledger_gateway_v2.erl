@@ -614,25 +614,21 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  RewardsMap = lists:foldl(
-        fun(Reward, Acc) ->
+  RewardsMap = rewards_map(Gw2),
+  RewardsFinal = lists:foldl(
+        fun(Reward,RewardsList) ->
                 OwnerAddress = lists:sublist(Reward,length(Reward)-1),
                 Percentage = lists:sublist(Reward,length(Reward)-1,length(Reward)),
-                maps:put(OwnerAddress, Percentage, Acc)
+                RewardsList ++ {OwnerAddress,Percentage}
         end,
         #{},
         RewardsMap
   ),
-  maps:fold(
-    fun() -> _
-    end,
-        ok,
-        RewardsMap
-  ),
+
 
 
   Gw2#gateway_v2{witnesses = Witnesses1,
-                rewards_map = RewardsMap}.
+                rewards_map = RewardsFinal}.
 
 %% OK to include here, v1 should now be immutable.
 -record(gateway_v1, {
