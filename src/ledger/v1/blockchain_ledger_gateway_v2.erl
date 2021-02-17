@@ -615,8 +615,7 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  Gw3 = rewards_map(Gw2),
-  RewardsMap = rewards_map(Gw3),
+  RewardsMap = Gw2#gateway_v2.rewards_map,
   Gw2#gateway_v2{witnesses = Witnesses1,
                  rewards_map = RewardsMap}.
 
