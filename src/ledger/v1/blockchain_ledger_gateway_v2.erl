@@ -594,8 +594,8 @@ deserialize(<<2, Bin/binary>>) ->
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
-        Address = lists:nth(2,L),
-        rewards_map(G1,{Address,100}),
+  %%      Address = lists:nth(2,L),
+  %%      rewards_map(G1,{Address,100}),
         neighbors([], G1);
       14 ->
         Gw
@@ -616,7 +616,13 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-  RewardsMap = rewards_map(Gw1),
+  OwnerAddress = owner_address(Gw1),
+  RewardsMap =
+        case length(rewards_map(Gw1) == 0) of
+            true -> {OwnerAddress,100};
+            false -> rewards_map(Gw1)
+        end,
+
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
                 case is_list(Reward) of
