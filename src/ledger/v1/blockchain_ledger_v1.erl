@@ -1050,7 +1050,7 @@ find_gateway_last_challenge(Address, Ledger) ->
 find_gateway_rewards_map(Address,  Ledger) ->
     AGwsCF = active_gateways_cf(Ledger),
     GwDenormCF = gw_denorm_cf(Ledger),
-    case cache_get(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, {}) of
+    case cache_get(Ledger, GwDenormCF, <<Address/binary, "-rewardsmap">>, []) of
         {ok, RewardsMap} ->
             {ok, RewardsMap};
         _ ->
