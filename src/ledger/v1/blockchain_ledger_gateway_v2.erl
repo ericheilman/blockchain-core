@@ -617,9 +617,14 @@ deserialize(<<2, Bin/binary>>) ->
   RewardsMap = rewards_map(Gw2),
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
-                Percentage = lists:last(Reward),
-                OwnerAddress = lists:droplast(Reward),
-                RewardsList ++ {OwnerAddress,Percentage}
+                case length(Reward) > 0 of
+                    true ->
+                        Percentage = lists:last(Reward),
+                        OwnerAddress = lists:droplast(Reward),
+                        RewardsList ++ {OwnerAddress,Percentage};
+                    false ->
+                        RewardsList
+                end
         end,
         [],
         RewardsMap
