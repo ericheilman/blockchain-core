@@ -599,7 +599,7 @@ deserialize(<<2, Bin/binary>>) ->
         Gw
     end,
   Neighbors = neighbors(Gw1),
-
+  RewardsMap = rewards_map(Gw1),
   Gw2 = neighbors(lists:usort(Neighbors), Gw1),
   Witnesses = Gw2#gateway_v2.witnesses,
   Witnesses1 =
@@ -615,8 +615,8 @@ deserialize(<<2, Bin/binary>>) ->
       false ->
         Witnesses
     end,
-
-  Gw2#gateway_v2{witnesses = Witnesses1}.
+  Gw2#gateway_v2{witnesses = Witnesses1,
+                 rewards_map = RewardsMap}.
 
 %% OK to include here, v1 should now be immutable.
 -record(gateway_v1, {
