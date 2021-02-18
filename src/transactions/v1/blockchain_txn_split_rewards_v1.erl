@@ -181,7 +181,7 @@ is_valid_buyer(#blockchain_txn_split_rewards_v1_pb{buyer=Buyer,
     libp2p_crypto:verify(EncodedTxn, BuyerSig, Pubkey).
 
 %% These can be made private
- -spec is_valid_percentage(non_neg_integer(), blockchain_ledger_v1:ledger()) -> boolean().
+ -spec is_valid_percentage(txn_split_rewards()) -> boolean().
 is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},Ledger) ->
     {ok, RewardTransferMinimum} = blockchain:config(?reward_transfer_minimum, Ledger),
     {ok, RewardTransferMaximum} = blockchain:config(?reward_transfer_maximum, Ledger),
