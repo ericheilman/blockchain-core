@@ -149,7 +149,7 @@ absorb(Txn, Chain) ->
         Rewards
     ),
 
- %%  erlang:display(RewardsMap),
+     RewardsMap = RewardsMap,
 
     AccRewards = lists:foldl(
         fun(Reward, Acc) ->
