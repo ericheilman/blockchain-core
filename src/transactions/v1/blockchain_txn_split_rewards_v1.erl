@@ -199,8 +199,9 @@ seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
                                                              seller=Seller,
                                                              percentage=Percentage}) ->
      OwnedPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
-     if OwnedPercentage < Percentage -> false;
-       true -> true
+     case OwnedPercentage < Percentage  of
+            true -> true;
+            _ -> false
      end.
 
  -spec is_valid_num_splits(txn_split_rewards(), blockchain_ledger_v1:ledger()) -> boolean().
@@ -208,8 +209,9 @@ is_valid_num_splits(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway},
                     Ledger) ->
      {ok, MaxNumSplits} = blockchain:config(?max_num_splits, Ledger),
      NumSplits = blockchain_ledger_gateway_v2:num_splits(Gateway),
-     if NumSplits =:= MaxNumSplits -> false;
-        true -> true
+     case NumSplits =:= MaxNumSplits of
+        true -> true;
+        _ -> false
      end.
 
  -spec is_valid_split_total(txn_split_rewards()) -> boolean().
@@ -222,8 +224,9 @@ is_valid_split_total(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
      Gw1 = blockchain_ledger_gateway_v2:set_split(Gateway,Seller,OldOwnerPercentage - Percentage),
      Gw2 = blockchain_ledger_gateway_v2:set_split(Gw1,Buyer,OldSellerPercentage + Percentage),
      PostSplitPercentage = lists:sum(blockchain_ledger_gateway_v2:get_splits(Gw2)),
-     if PostSplitPercentage =/= 100 -> false;
-        true -> true
+     case PostSplitPercentage == 100 of
+        true -> true;
+        _ -> false
      end.
 
  -spec is_valid(txn_split_rewards(), blockchain:blockchain()) -> ok | {error, any()}.
