@@ -142,6 +142,7 @@ absorb(Txn, Chain) ->
                      %% erlang:display(RewardsMap),
                      RewardMap =
                         case blockchain_ledger_gateway_v2:rewards_map(Gateway) of
+                            undefined -> [{GatewayAddress,100}];
                             [] -> [{GatewayAddress,100}];
                             R -> R
                         end,
