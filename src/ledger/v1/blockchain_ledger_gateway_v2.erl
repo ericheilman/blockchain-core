@@ -596,6 +596,7 @@ deserialize(<<2, Bin/binary>>) ->
         L2 = lists:append(L1, [{<<"owner_address">>,100}]),
         G1 = list_to_tuple(L2),
         neighbors([], G1);
+
       14 ->
         Gw
     end,
@@ -618,12 +619,7 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
 
-  RewardsMap =
-    case rewards_map(Gw1) == undefined of
-        true -> [{<<"owner_address">>,100}];
-        false -> rewards_map(Gw1)
-    end,
-  rewards_map(Gw1,RewardsMap),
+  RewardsMap = rewards_map(Gw2),
 
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
