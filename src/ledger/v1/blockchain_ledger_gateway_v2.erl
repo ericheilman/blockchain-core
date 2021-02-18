@@ -738,7 +738,7 @@ get_splits_test() ->
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 80),
   ?assertEqual(get_splits(Gw),[20,80]).
 
-get_splits_test() ->
+get_split_test() ->
   Gw = #gateway_v2{
     owner_address = <<"owner_address">>,
     location = 15,
