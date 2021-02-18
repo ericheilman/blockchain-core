@@ -67,7 +67,7 @@
     neighbors = [] :: [libp2p_crypto:pubkey_bin()],
     witnesses = [] :: witnesses_int(),
     oui = undefined :: undefined | pos_integer(),
-    rewards_map = [] :: rewards_map()
+    rewards_map = [] :: [rewards_map()]
 }).
 
 -type gateway() :: #gateway_v2{}.
