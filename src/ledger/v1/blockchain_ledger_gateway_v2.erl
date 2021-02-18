@@ -593,9 +593,9 @@ deserialize(<<2, Bin/binary>>) ->
         L = tuple_to_list(Gw),
         %% add an undefined OUI slot
         L1 = lists:append(L, [undefined]),
-        G1 = list_to_tuple(L1),
+        L2 = lists:append(L1, [{<<"owner_address">>,100}]),
+        G1 = list_to_tuple(L2),
         neighbors([], G1);
-
       14 ->
         Gw
     end,
@@ -619,7 +619,7 @@ deserialize(<<2, Bin/binary>>) ->
     end,
 
   RewardsMap =
-    case length(rewards_map(Gw1)) == 0 of
+    case rewards_map(Gw1) == undefined of
         true -> [{<<"owner_address">>,100}];
         false -> rewards_map(Gw1)
     end,
