@@ -136,7 +136,7 @@ absorb(Txn, Chain) ->
              GatewayAddress = blockchain_txn_reward_v1:gateway(Reward),
              case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
                  {error, _ } ->
-                    ok;
+                    Acc;
                  {ok,Gateway} ->
                      %% erlang:display(Gateway),
                      %% erlang:display(RewardsMap),
