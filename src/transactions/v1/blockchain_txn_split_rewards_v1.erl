@@ -281,8 +281,8 @@ absorb(Txn, Chain) ->
         ok ->
             ok = blockchain_ledger_v1:debit_account(Buyer, HNTToSeller,BuyerNonce, Ledger),
             ok = blockchain_ledger_v1:credit_account(Seller, HNTToSeller, Ledger),
-            ok = blockchain_ledger_v2:set_split(Gateway, Buyer, NewBuyerPercentage),
-            ok = blockchain_ledger_v2:set_split(Gateway, Seller, NewSellerPercentage)
+            blockchain_ledger_gateway_v2:set_split(Gateway, Buyer, NewBuyerPercentage),
+            blockchain_ledger_gateway_v2:set_split(Gateway, Seller, NewSellerPercentage)
     end.
 
 -spec print(txn_split_rewards()) -> iodata().
