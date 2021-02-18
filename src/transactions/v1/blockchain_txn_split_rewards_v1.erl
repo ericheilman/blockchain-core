@@ -34,7 +34,7 @@
          is_valid_seller/1,
          is_valid_buyer/1,
          is_valid_percentage/2,
-         seller_has_percentage/1,
+         seller_has_percentage/2,
          is_valid_num_splits/2,
          is_valid_split_total/1,
          absorb/2,
@@ -192,13 +192,15 @@ is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},
         _ -> false
     end.
 
- -spec seller_has_percentage(txn_split_rewards()) -> boolean().
-seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
+ -spec seller_has_percentage(txn_split_rewards(),blockchain_ledger_v1:ledger()) -> boolean().
+seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=GatewayAddress,
                                                              seller=Seller,
-                                                             percentage=Percentage}) ->
+                                                             percentage=Percentage},
+                      Ledger) ->
+    Gateway = blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger),
     OwnerPercentage =
         case blockchain_ledger_gateway_v2:get_split(Gateway,Seller) of
-            {Val, _} -> Val;
+            {Val, _ } -> Val;
             _ -> 0
         end,
 
@@ -254,7 +256,7 @@ is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
                                           {error, invalid_split_total}},
                   {fun() -> seller_owns_gateway(Txn, Ledger) end,
                                           {error, gateway_not_owned_by_seller}},
-                  {fun() -> seller_has_percentage(Txn) end,
+                  {fun() -> seller_has_percentage(Txn, Ledger) end,
                                           {error, seller_insufficient_percentage}},
                   {fun() -> buyer_nonce_correct(Txn, Ledger) end,
                                           {error, wrong_buyer_nonce}},
