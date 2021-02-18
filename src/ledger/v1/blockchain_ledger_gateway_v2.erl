@@ -723,6 +723,20 @@ num_splits_test() ->
   },
   ?assertEqual(num_splits(Gw),2).
 
+get_split_test() ->
+  Gw = #gateway_v2{
+    owner_address = <<"owner_address">>,
+    location = 15,
+    rewards_map = [{<<"owner_address">>, 40}, {<<"owner_address2">>, 60}],
+    last_poc_challenge = undefined,
+    last_poc_onion_key_hash = undefined,
+    nonce = 0,
+    delta = 2
+  },
+  ?assertEqual(get_split(Gw, <<"owner_address">>), 40),
+  ?assertEqual(get_split(Gw, <<"owner_address2">>), 60).
+
+
 get_splits_test() ->
   Gw = #gateway_v2{
     owner_address = <<"owner_address">>,
@@ -733,15 +747,15 @@ get_splits_test() ->
     nonce = 0,
     delta = 2
   },
-  ?assertEqual(get_split(Gw, <<"owner_address">>), 20),
-  ?assertEqual(get_split(Gw, <<"owner_address2">>), 80),
   ?assertEqual(get_splits(Gw),[20,80]).
 
-get_split_test() ->
+
+
+set_split_test() ->
   Gw = #gateway_v2{
     owner_address = <<"owner_address">>,
     location = 15,
-    rewards_map = [{<<"owner_address">>, 50}, {<<"owner_address2">>, 50}],
+    rewards_map = [{<<"owner_address">>, 20}, {<<"owner_address2">>, 80}],
     last_poc_challenge = undefined,
     last_poc_onion_key_hash = undefined,
     nonce = 0,
@@ -753,9 +767,9 @@ get_split_test() ->
   ?assertEqual(get_split(Gw3,<<"owner_address2">>),10).
 
 owner_address_test() ->
-  Gw = new(<<"owner_address">>, 12),
-  ?assertEqual(<<"owner_address">>, owner_address(Gw)),
-  ?assertEqual(<<"owner_address2">>, owner_address(owner_address(<<"owner_address2">>, Gw))).
+    Gw = new(<<"owner_address">>, 12),
+    ?assertEqual(<<"owner_address">>, owner_address(Gw)),
+    ?assertEqual(<<"owner_address2">>, owner_address(owner_address(<<"owner_address2">>, Gw))).
 
 location_test() ->
   Gw = new(<<"owner_address">>, 12),
