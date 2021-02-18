@@ -138,26 +138,15 @@ absorb(Txn, Chain) ->
                  {error, _ } ->
                     Acc;
                  {ok,Gateway} ->
-                     erlang:display(Gateway),
-                     %% erlang:display(RewardsMap),
                      RewardMap =
                         case blockchain_ledger_gateway_v2:rewards_map(Gateway) of
-                            undefined -> [{GatewayAddress,100}];
+                            undefined -> [{<<"owner_address">>,100}];
                             [] -> [{GatewayAddress,100}];
                             R -> R
                         end,
-                    %% erlang:display(Gateway),
                      erlang:display(RewardMap),
-                     %% erlang:display(RewardMap),
                      maps:put(Reward, RewardMap, Acc)
-
-                %%         _ = lists:foreach(fun(Entry) ->
-                %%              Balance = blockchain_ledger_entry_v1:balance(Entry),
-                %%              0 = blockchain_ledger_entry_v1:nonce(Entry)
-                %%      end, maps:values(Entries)),
-
              end
-
         end,
         #{},
         Rewards

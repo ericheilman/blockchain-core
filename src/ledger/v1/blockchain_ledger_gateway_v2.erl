@@ -166,6 +166,7 @@ neighbors(Neighbors, Gateway) ->
 rewards_map(Gateway) ->
     Gateway#gateway_v2.rewards_map.
 
+
 -spec rewards_map(Gateway :: gateway(), RewardsMap :: [rewards_map()]) -> gateway().
 rewards_map(Gateway,RewardsMap) ->
     Gateway#gateway_v2{rewards_map = RewardsMap}.
