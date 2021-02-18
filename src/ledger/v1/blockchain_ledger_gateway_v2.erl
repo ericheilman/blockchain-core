@@ -170,9 +170,12 @@ rewards_map(Gateway) ->
 rewards_map(Gateway,RewardsMap) ->
     Gateway#gateway_v2{rewards_map = RewardsMap}.
 
--spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> false | {non_neg_integer(),rewards_map()}.
+-spec get_split(Gateway :: gateway(), OwnerAddress :: libp2p_crypto:pubkey_bin()) -> non_neg_integer().
 get_split(Gateway, OwnerAddress) ->
-    lists:keysearch(OwnerAddress,1,Gateway#gateway_v2.rewards_map).
+    case lists:keysearch(OwnerAddress,1,Gateway#gateway_v2.rewards_map) of
+        false -> 0;
+        {P,_} -> P
+    end.
    %% lists:nth(1, [Y || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X]).
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
