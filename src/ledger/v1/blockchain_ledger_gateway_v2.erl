@@ -176,7 +176,6 @@ get_split(Gateway, OwnerAddress) ->
         false -> 0;
         {P,_} -> P
     end.
-   %% lists:nth(1, [Y || {X, Y} <- Gateway#gateway_v2.rewards_map, OwnerAddress == X]).
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
 get_splits(Gateway) ->
@@ -734,7 +733,7 @@ get_splits_test() ->
     nonce = 0,
     delta = 2
   },
-  ?assertEqual(get_split(Gw, owner_address(Gw)), 20),
+  ?assertEqual(get_split(Gw, <<"owner_address">>, 20),
   ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 80),
   ?assertEqual(get_splits(Gw),[20,80]).
 
