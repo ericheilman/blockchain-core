@@ -141,8 +141,8 @@ absorb(Txn, Chain) ->
                      %% erlang:display(Gateway),
                      %% erlang:display(RewardsMap),
                      RewardMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
-                     erlang:display(Gateway),
-                     erlang:display(RewardMap),
+                    %% erlang:display(Gateway),
+                    %% erlang:display(RewardMap),
                      %% erlang:display(RewardMap),
                      maps:put(Reward, RewardMap, Acc)
 
