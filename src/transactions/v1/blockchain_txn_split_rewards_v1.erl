@@ -209,13 +209,18 @@ seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=GatewayAddress
     end.
 
  -spec is_valid_num_splits(txn_split_rewards(), blockchain_ledger_v1:ledger()) -> boolean().
-is_valid_num_splits(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway},
+is_valid_num_splits(#blockchain_txn_split_rewards_v1_pb{gateway=GatewayAddress},
                     Ledger) ->
      {ok, MaxNumSplits} = blockchain:config(?max_num_splits, Ledger),
-     NumSplits = blockchain_ledger_gateway_v2:num_splits(Gateway),
-     case NumSplits =:= MaxNumSplits of
-        true -> true;
-        _ -> false
+     case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
+        {error, _} ->
+            false;
+        {ok, Gateway} ->
+            NumSplits = blockchain_ledger_gateway_v2:num_splits(Gateway),
+            case NumSplits =:= MaxNumSplits of
+                true -> true;
+                _ -> false
+            end
      end.
 
  -spec is_valid_split_total(txn_split_rewards()) -> boolean().
