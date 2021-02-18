@@ -260,26 +260,32 @@ is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
 absorb(Txn, Chain) ->
     Ledger = blockchain:ledger(Chain),
     AreFeesEnabled = blockchain_ledger_v1:txn_fees_active(Ledger),
-    Gateway = ?MODULE:gateway(Txn),
+    GatewayAddress = ?MODULE:gateway(Txn),
     Seller = ?MODULE:seller(Txn),
     Buyer = ?MODULE:buyer(Txn),
     Percentage = ?MODULE:percentage(Txn),
-    OldSellerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
-    OldBuyerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Buyer),
-    NewSellerPercentage = OldSellerPercentage - Percentage,
-    NewBuyerPercentage = OldBuyerPercentage + Percentage,
     Fee = ?MODULE:fee(Txn),
     BuyerNonce = ?MODULE:buyer_nonce(Txn),
     HNTToSeller = ?MODULE:amount_to_seller(Txn),
 
-    %% fees here are in DC (and perhaps converted to HNT automagically)
-    case blockchain_ledger_v1:debit_fee(Buyer, Fee, Ledger, AreFeesEnabled) of
-        {error, _Reason} = Error -> Error;
-        ok ->
-            ok = blockchain_ledger_v1:debit_account(Buyer, HNTToSeller,BuyerNonce, Ledger),
-            ok = blockchain_ledger_v1:credit_account(Seller, HNTToSeller, Ledger),
-            blockchain_ledger_gateway_v2:set_split(Gateway, Buyer, NewBuyerPercentage),
-            blockchain_ledger_gateway_v2:set_split(Gateway, Seller, NewSellerPercentage)
+    case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
+       {error, _} ->
+           false;
+       {ok, Gateway} ->
+            OldSellerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
+            OldBuyerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Buyer),
+            NewSellerPercentage = OldSellerPercentage - Percentage,
+            NewBuyerPercentage = OldBuyerPercentage + Percentage,
+
+            %% fees here are in DC (and perhaps converted to HNT automagically)
+            case blockchain_ledger_v1:debit_fee(Buyer, Fee, Ledger, AreFeesEnabled) of
+                {error, _Reason} = Error -> Error;
+                ok ->
+                    ok = blockchain_ledger_v1:debit_account(Buyer, HNTToSeller,BuyerNonce, Ledger),
+                    ok = blockchain_ledger_v1:credit_account(Seller, HNTToSeller, Ledger),
+                    blockchain_ledger_gateway_v2:set_split(Gateway, Buyer, NewBuyerPercentage),
+                    blockchain_ledger_gateway_v2:set_split(Gateway, Seller, NewSellerPercentage)
+            end
     end.
 
 -spec print(txn_split_rewards()) -> iodata().
