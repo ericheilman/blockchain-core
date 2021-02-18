@@ -130,24 +130,20 @@ is_valid(Txn, Chain) ->
 -spec absorb(txn_rewards(), blockchain:blockchain()) -> ok | {error, atom()} | {error, {atom(), any()}}.
 absorb(Txn, Chain) ->
     Ledger = blockchain:ledger(Chain),
-  %%  Gateway = blockchain_txn_reward_v1:gateway(Reward),
     Rewards = ?MODULE:rewards(Txn),
-
-    %% A map of REWARDS -> rewards_map()'s , (Account, Percentage)
-
     RewardsMap = lists:foldl(
         fun(Reward, Acc) ->
              GatewayAddress = blockchain_txn_reward_v1:gateway(Reward),
-                  case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
-                      {error, _}=Error ->
-                          Error;
-                      {ok,Gateway} ->
-                          %% erlang:display(Gateway),
-                          %% erlang:display(RewardsMap),
-                          RewardMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
-                          %% erlang:display(RewardMap),
-                          maps:put(Reward, RewardMap, Acc)
-                  end
+             case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
+                 {error, _ } ->
+                     Acc;
+                 {ok,Gateway} ->
+                     %% erlang:display(Gateway),
+                     %% erlang:display(RewardsMap),
+                     RewardMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
+                     %% erlang:display(RewardMap),
+                     maps:put(Reward, RewardMap, Acc)
+             end
 
         end,
         #{},
