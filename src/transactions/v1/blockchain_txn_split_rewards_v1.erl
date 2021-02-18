@@ -196,7 +196,7 @@ is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},
 seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
                                                              seller=Seller,
                                                              percentage=Percentage}) ->
-    
+
     {OwnedPercentage, _ } = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
      case OwnedPercentage >= Percentage  of
             true -> true;
