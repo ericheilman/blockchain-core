@@ -133,6 +133,7 @@ absorb(Txn, Chain) ->
     Rewards = ?MODULE:rewards(Txn),
     RewardsMap = lists:foldl(
         fun(Reward, Acc) ->
+            erlang:display(Reward),
              GatewayAddress = blockchain_txn_reward_v1:gateway(Reward),
              case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
                  {error, _ } ->
@@ -148,7 +149,7 @@ absorb(Txn, Chain) ->
         Rewards
     ),
 
-   erlang:display(RewardsMap),
+ %%  erlang:display(RewardsMap),
 
     AccRewards = lists:foldl(
         fun(Reward, Acc) ->
