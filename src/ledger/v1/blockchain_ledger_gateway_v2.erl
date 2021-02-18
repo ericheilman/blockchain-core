@@ -174,7 +174,7 @@ rewards_map(Gateway,RewardsMap) ->
 get_split(Gateway, OwnerAddress) ->
     case lists:keysearch(OwnerAddress,1,Gateway#gateway_v2.rewards_map) of
         false -> 0;
-        {P,_} -> P
+        {_,{_,Percentage}} -> Percentage
     end.
 
 -spec get_splits(Gateway :: gateway()) -> [non_neg_integer()].
@@ -734,7 +734,7 @@ get_splits_test() ->
     delta = 2
   },
   ?assertEqual(get_split(Gw, <<"owner_address">>), 20),
-  ?assertEqual(get_split(Gw, owner_address(owner_address(<<"owner_address2">>, Gw))), 80),
+  ?assertEqual(get_split(Gw, <<"owner_address2">>), 80),
   ?assertEqual(get_splits(Gw),[20,80]).
 
 get_split_test() ->
