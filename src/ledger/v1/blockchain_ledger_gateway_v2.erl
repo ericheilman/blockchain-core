@@ -600,7 +600,7 @@ deserialize(<<2, Bin/binary>>) ->
         Gw
     end,
   erlang:display(size(Gw1)),
-  erlang:display(Gw1),
+  %%erlang:display(Gw1),
   Neighbors = neighbors(Gw1),
   Gw2 = neighbors(lists:usort(Neighbors), Gw1),
   Witnesses = Gw2#gateway_v2.witnesses,
@@ -618,8 +618,13 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
 
+  OwnerAddress = owner_address(Gw1),
+  RewardsMap =
+        case rewards_map(Gw1) of
+            undefined -> [{OwnerAddress,100}];
+            R -> R
+        end,
 
-  RewardsMap = rewards_map(Gw1),
 
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
