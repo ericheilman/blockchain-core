@@ -36,7 +36,6 @@
          is_valid_percentage/2,
          seller_has_percentage/2,
          is_valid_num_splits/2,
-         is_valid_split_total/2,
          absorb/2,
          print/1,
          to_json/2
@@ -223,29 +222,6 @@ is_valid_num_splits(#blockchain_txn_split_rewards_v1_pb{gateway=GatewayAddress},
             end
      end.
 
- -spec is_valid_split_total(txn_split_rewards(), blockchain_ledger_v1:ledger()) -> boolean().
-is_valid_split_total(#blockchain_txn_split_rewards_v1_pb{gateway=GatewayAddress,
-                                                          seller=Seller,
-                                                          buyer=Buyer,
-                                                          percentage=Percentage},
-                     Ledger) ->
-     case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
-        {error, _} ->
-            false;
-        {ok, Gateway} ->
-            OldOwnerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
-            OldSellerPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Buyer),
-            Gw1 = blockchain_ledger_gateway_v2:set_split(Gateway,Seller,OldOwnerPercentage - Percentage),
-            Gw2 = blockchain_ledger_gateway_v2:set_split(Gw1,Buyer,OldSellerPercentage + Percentage),
-            NewOwnerPercentage = blockchain_ledger_gateway_v2:get_split(Gw1,Seller),
-            NewSellerPercentage = blockchain_ledger_gateway_v2:get_split(Gw2,Buyer),
-            PostSplitPercentage = NewOwnerPercentage + NewSellerPercentage,
-            case PostSplitPercentage == 100 of
-                true -> true;
-                _ -> false
-            end
-     end.
-
  -spec is_valid(txn_split_rewards(), blockchain:blockchain()) -> ok | {error, any()}.
 is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
                                                 buyer=Buyer,
@@ -264,8 +240,6 @@ is_valid(#blockchain_txn_split_rewards_v1_pb{seller=Seller,
                                           {error, invalid_percentage}},
                   {fun() -> is_valid_num_splits(Txn, Ledger) end,
                                           {error, too_many_splits}},
-                  {fun() -> is_valid_split_total(Txn, Ledger) end,
-                                          {error, invalid_split_total}},
                   {fun() -> seller_owns_gateway(Txn, Ledger) end,
                                           {error, gateway_not_owned_by_seller}},
                   {fun() -> seller_has_percentage(Txn, Ledger) end,
