@@ -150,7 +150,7 @@ absorb(Txn, Chain) ->
                   end
 
         end,
-        [],
+        #{},
         Rewards
     ),
 
