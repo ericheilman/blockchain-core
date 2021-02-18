@@ -1088,7 +1088,7 @@ gateway_cache_get(Address, Ledger) ->
 -spec add_gateway(libp2p_crypto:pubkey_bin(), libp2p_crypto:pubkey_bin(), ledger()) -> ok | {error, gateway_already_active}.
 add_gateway(OwnerAddr, GatewayAddress, Ledger) ->
     case ?MODULE:find_gateway_info(GatewayAddress, Ledger) of
-        {error, _} ->
+        {ok, _} ->
             {error, gateway_already_active};
         _ ->
             Gateway = blockchain_ledger_gateway_v2:new(OwnerAddr, undefined),
@@ -1109,7 +1109,7 @@ add_gateway(OwnerAddr,
             Nonce,
             Ledger) ->
     case ?MODULE:find_gateway_info(GatewayAddress, Ledger) of
-        {error, _} ->
+        {ok, _} ->
             {error, gateway_already_active};
         _ ->
             {ok, Height} = ?MODULE:current_height(Ledger),
