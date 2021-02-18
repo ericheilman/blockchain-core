@@ -586,8 +586,6 @@ deserialize(<<1, Bin/binary>>) ->
   convert(V1);
 deserialize(<<2, Bin/binary>>) ->
   Gw = erlang:binary_to_term(Bin),
-  erlang:display(size(Gw)),
-  erlang:display(Gw),
   Gw1 =
     case size(Gw) of
       %% pre-oui upgrade
@@ -597,10 +595,12 @@ deserialize(<<2, Bin/binary>>) ->
         L1 = lists:append(L, [undefined]),
         G1 = list_to_tuple(L1),
         neighbors([], G1);
+
       14 ->
         Gw
     end,
-
+  erlang:display(size(Gw1)),
+  erlang:display(Gw1),
   Neighbors = neighbors(Gw1),
   Gw2 = neighbors(lists:usort(Neighbors), Gw1),
   Witnesses = Gw2#gateway_v2.witnesses,
