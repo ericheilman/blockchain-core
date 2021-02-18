@@ -132,6 +132,24 @@ absorb(Txn, Chain) ->
     Ledger = blockchain:ledger(Chain),
   %%  Gateway = blockchain_txn_reward_v1:gateway(Reward),
     Rewards = ?MODULE:rewards(Txn),
+
+    %% A map of REWARDS -> rewards_map()'s , (Account, Percentage)
+
+    RewardsMap = lists:foldl(
+        fun(Reward, RewardsMap) ->
+             Gateway = blockchain_txn_reward_v1:gateway(Reward),
+             erlang:display(Gateway),
+             erlang:display(RewardsMap),
+             RewardMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
+             erlang:display(RewardMap),
+             maps:put(Reward, RewardMap, RewardsMap)
+        end,
+        [],
+        Rewards
+    ),
+
+    erlang:display(RewardsMap),
+
     AccRewards = lists:foldl(
         fun(Reward, Acc) ->
          %%  Gateway = blockchain_txn_reward_v1:gateway(Reward),
