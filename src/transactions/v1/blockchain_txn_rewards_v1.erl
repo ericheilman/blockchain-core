@@ -136,9 +136,8 @@ absorb(Txn, Chain) ->
     %% A map of REWARDS -> rewards_map()'s , (Account, Percentage)
 
     RewardsMap = lists:foldl(
-        fun(Reward, RewardsMap) ->
+        fun(Reward, Acc) ->
              GatewayAddress = blockchain_txn_reward_v1:gateway(Reward),
-             Gateway =
                   case blockchain_ledger_v1:find_gateway_info(GatewayAddress,Ledger) of
                       {error, _}=Error ->
                           Error;
@@ -147,7 +146,7 @@ absorb(Txn, Chain) ->
                           %% erlang:display(RewardsMap),
                           RewardMap = blockchain_ledger_gateway_v2:rewards_map(Gateway),
                           %% erlang:display(RewardMap),
-                          maps:put(Reward, RewardMap, RewardsMap)
+                          maps:put(Reward, RewardMap, Acc)
                   end
 
         end,
