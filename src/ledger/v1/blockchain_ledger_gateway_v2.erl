@@ -619,7 +619,7 @@ deserialize(<<2, Bin/binary>>) ->
         Witnesses
     end,
 
-  RewardsMap = rewards_map(Gw2),
+  RewardsMap = rewards_map(Gw1),
 
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
