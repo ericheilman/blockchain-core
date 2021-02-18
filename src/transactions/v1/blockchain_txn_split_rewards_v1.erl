@@ -203,9 +203,8 @@ seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=GatewayAddress
         {ok, Gateway} ->
             OwnerPercentage =
                 case blockchain_ledger_gateway_v2:get_split(Gateway,Seller) of
-                    false -> 0;
-                    _ -> blockchain_ledger_gateway_v2:get_split(Gateway,Seller)
-
+                    {error, _} -> 0;
+                    {Val, _} -> Val
                 end,
                 case OwnerPercentage >= Percentage of
                     true -> true;
