@@ -188,7 +188,7 @@ is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},
     {ok, RewardTransferMaximum} = blockchain:config(?reward_transfer_maximum, Ledger),
     if is_integer(Percentage) andalso Percentage >= RewardTransferMinimum
                                 andalso Percentage =< RewardTransferMaximum -> true;
-        false -> false
+        _ -> false
     end.
 
 
