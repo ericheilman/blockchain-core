@@ -138,24 +138,17 @@ absorb(Txn, Chain) ->
                  {error, _ } ->
                     Acc;
                  {ok,Gateway} ->
-                     RewardMap =
                         case blockchain_ledger_gateway_v2:rewards_map(Gateway) of
-                            undefined -> _;
                             [] -> maps:put(Reward,[{GatewayAddress,100}], Acc);
                             R -> maps:put(Reward,R, Acc)
-                        end,
-                        erlang:display("\n-------------------------\n"),
-                        erlang:display(Reward),
-                        erlang:display(RewardMap),
-                        erlang:display("\n-------------------------\n")
-
+                        end
              end
         end,
         #{},
         Rewards
     ),
 
-   RewardsMap = RewardsMap,
+   erlang:display(RewardsMap),
 
     AccRewards = lists:foldl(
         fun(Reward, Acc) ->
