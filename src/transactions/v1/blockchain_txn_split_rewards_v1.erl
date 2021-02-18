@@ -364,7 +364,7 @@ buyer_nonce_correct(#blockchain_txn_split_rewards_v1_pb{buyer_nonce=Nonce,
     end.
 
 
--spec get_config_or_default(txn_split_rewards(), blockchain_ledger_v1:ledger()) -> any().
+-spec get_config_or_default(txn_split_rewards(), blockchain_ledger_v1:ledger()) ->
 get_config_or_default(?transfer_hotspot_stale_poc_blocks=Config, Ledger) ->
     case blockchain_ledger_v1:config(Config, Ledger) of
         {error, not_found} -> ?STALE_POC_DEFAULT;
