@@ -185,11 +185,9 @@ is_valid_buyer(#blockchain_txn_split_rewards_v1_pb{buyer=Buyer,
 is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},Ledger) ->
     {ok, RewardTransferMinimum} = blockchain:config(?reward_transfer_minimum, Ledger),
     {ok, RewardTransferMaximum} = blockchain:config(?reward_transfer_maximum, Ledger),
-    case is_integer(Percentage) andalso Percentage >= RewardTransferMinimum
-                                andalso Percentage =< RewardTransferMaximum of
-      {error,_Reason} -> false;
-      ok -> true
-    end.
+    is_integer(Percentage) andalso Percentage >= RewardTransferMinimum
+                                andalso Percentage =< RewardTransferMaximum.
+
 
  -spec seller_has_percentage(txn_split_rewards()) -> boolean().
 seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
