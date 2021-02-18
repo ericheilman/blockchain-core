@@ -140,12 +140,11 @@ absorb(Txn, Chain) ->
                  {ok,Gateway} ->
                      RewardMap =
                         case blockchain_ledger_gateway_v2:rewards_map(Gateway) of
-                            undefined -> [{<<"owner_address">>,100}];
-                            [] -> [{GatewayAddress,100}];
-                            R -> R
+                            undefined -> _;
+                            [] -> maps:put(Reward,[{GatewayAddress,100}], Acc);
+                            R -> maps:put(Reward,R, Acc)
                         end,
-                     erlang:display(RewardMap),
-                     maps:put(Reward, RewardMap, Acc)
+                        erlang:display(RewardMap)
              end
         end,
         #{},
