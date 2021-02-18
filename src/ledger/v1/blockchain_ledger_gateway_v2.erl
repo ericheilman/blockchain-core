@@ -586,7 +586,6 @@ deserialize(<<1, Bin/binary>>) ->
   convert(V1);
 deserialize(<<2, Bin/binary>>) ->
   Gw = erlang:binary_to_term(Bin),
-  erlang:display(size(Gw)),
   Gw1 =
     case size(Gw) of
       %% pre-oui upgrade
@@ -599,8 +598,6 @@ deserialize(<<2, Bin/binary>>) ->
       14 ->
         Gw
     end,
-  erlang:display(size(Gw1)),
-  %%erlang:display(Gw1),
   Neighbors = neighbors(Gw1),
   Gw2 = neighbors(lists:usort(Neighbors), Gw1),
   Witnesses = Gw2#gateway_v2.witnesses,
@@ -622,9 +619,9 @@ deserialize(<<2, Bin/binary>>) ->
   RewardsMap =
         case rewards_map(Gw1) of
             undefined -> [{OwnerAddress,100}];
+            [] -> [{OwnerAddress,100}];
             R -> R
         end,
-
 
   RewardsFinal = lists:foldl(
         fun(Reward,RewardsList) ->
