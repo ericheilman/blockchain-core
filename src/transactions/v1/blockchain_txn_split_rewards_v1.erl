@@ -33,7 +33,7 @@
          is_valid/2,
          is_valid_seller/1,
          is_valid_buyer/1,
-         is_valid_percentage/1,
+         is_valid_percentage/2,
          seller_has_percentage/1,
          is_valid_num_splits/2,
          is_valid_split_total/1,
@@ -181,8 +181,9 @@ is_valid_buyer(#blockchain_txn_split_rewards_v1_pb{buyer=Buyer,
     libp2p_crypto:verify(EncodedTxn, BuyerSig, Pubkey).
 
 %% These can be made private
- -spec is_valid_percentage(txn_split_rewards()) -> boolean().
-is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},Ledger) ->
+ -spec is_valid_percentage(txn_split_rewards(), blockchain_ledger_v1:ledger()) -> boolean().
+is_valid_percentage(#blockchain_txn_split_rewards_v1_pb{percentage=Percentage},
+                      Ledger) ->
     {ok, RewardTransferMinimum} = blockchain:config(?reward_transfer_minimum, Ledger),
     {ok, RewardTransferMaximum} = blockchain:config(?reward_transfer_maximum, Ledger),
     if is_integer(Percentage) andalso Percentage >= RewardTransferMinimum
