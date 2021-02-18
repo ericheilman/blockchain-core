@@ -1109,7 +1109,7 @@ add_gateway(OwnerAddr,
             Nonce,
             Ledger) ->
     case ?MODULE:find_gateway_info(GatewayAddress, Ledger) of
-        {ok, _} ->
+        {error, _} ->
             {error, gateway_already_active};
         _ ->
             {ok, Height} = ?MODULE:current_height(Ledger),

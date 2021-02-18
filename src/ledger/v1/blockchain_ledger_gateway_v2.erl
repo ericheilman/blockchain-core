@@ -162,11 +162,11 @@ neighbors(Neighbors, Gateway) ->
 %% @end
 %%--------------------------------------------------------------------
 
--spec rewards_map(Gateway :: gateway()) -> rewards_map().
+-spec rewards_map(Gateway :: gateway()) -> [rewards_map()].
 rewards_map(Gateway) ->
     Gateway#gateway_v2.rewards_map.
 
--spec rewards_map(Gateway :: gateway(), RewardsMap :: rewards_map()) -> rewards_map().
+-spec rewards_map(Gateway :: gateway(), RewardsMap :: rewards_map()) -> gateway().
 rewards_map(Gateway,RewardsMap) ->
     Gateway#gateway_v2{rewards_map = RewardsMap}.
 
@@ -184,7 +184,7 @@ set_split(Gateway, OwnerAddress, RewardSplit) ->
     RewardsMap = lists:keysort(2,lists:keyreplace(OwnerAddress,1,rewards_map(Gateway),{OwnerAddress,RewardSplit})),
     Gateway#gateway_v2{rewards_map = RewardsMap}.
 
--spec num_splits(Gateway :: gateway()) -> [non_neg_integer()].
+-spec num_splits(Gateway :: gateway()) -> non_neg_integer().
 num_splits(Gateway) ->
     length(Gateway#gateway_v2.rewards_map).
 
