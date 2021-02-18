@@ -199,7 +199,7 @@ seller_has_percentage(#blockchain_txn_split_rewards_v1_pb{gateway=Gateway,
                                                              seller=Seller,
                                                              percentage=Percentage}) ->
      OwnedPercentage = blockchain_ledger_gateway_v2:get_split(Gateway,Seller),
-     case OwnedPercentage < Percentage  of
+     case OwnedPercentage >= Percentage  of
             true -> true;
             _ -> false
      end.
