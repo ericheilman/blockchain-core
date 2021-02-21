@@ -555,6 +555,26 @@ oracle_keys_test() ->
     Results1 = [ libp2p_crypto:bin_to_pubkey(K) || K <- Results ],
     ?assertEqual([RawEccPK, RawEdPK], Results1).
 
+calculate_dc_amount_test() ->
+    BaseDir = test_utils:tmp_dir("calculate_dc_amount_test"),
+    Ledger = blockchain_ledger_v1:new(BaseDir),
+
+    meck:new(blockchain_ledger_v1, [passthrough]),
+    meck:expect(blockchain_ledger_v1, config, fun(_, _) ->
+        {ok, 24}
+    end),
+
+    ?assertEqual(1, calculate_dc_amount(Ledger, 1)),
+    ?assertEqual(1, calculate_dc_amount(Ledger, 23)),
+    ?assertEqual(1, calculate_dc_amount(Ledger, 24)),
+    ?assertEqual(2, calculate_dc_amount(Ledger, 25)),
+    ?assertEqual(2, calculate_dc_amount(Ledger, 47)),
+    ?assertEqual(2, calculate_dc_amount(Ledger, 48)),
+    ?assertEqual(3, calculate_dc_amount(Ledger, 49)),
+
+    meck:unload(blockchain_ledger_v1),
+    test_utils:cleanup_tmp_dir(BaseDir).
+
 count_votes_test() ->
     #{ public := PubKey1, secret := SecKey1} = libp2p_crypto:generate_keys(ecc_compact),
     #{ public := PubKey2, secret := SecKey2} = libp2p_crypto:generate_keys(ecc_compact),
