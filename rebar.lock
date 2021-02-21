@@ -56,15 +56,9 @@
   0},
  {<<"libp2p">>,
   {git,"https://github.com/helium/erlang-libp2p.git",
-<<<<<<< HEAD
        {ref,"aa6e4bc54d3db449c08a52119271200a1b1a83fb"}},
   0},
  {<<"libp2p_crypto">>,{pkg,<<"libp2p_crypto">>,<<"1.1.1">>},1},
-=======
-        {ref,"c7c1772447329774e26b601a250877c5fa1438a2"}},
- 0},
- {<<"libp2p_crypto">>,{pkg,<<"libp2p_crypto">>,<<"1.1.0">>},1},
->>>>>>> 39b735224550d3d11e8418dd7279acc0df922db8
  {<<"merkerl">>,
   {git,"https://github.com/helium/merkerl.git",
        {ref,"26ddcaf7f3c2c76eebf6f9258822f923ce69cb75"}},
