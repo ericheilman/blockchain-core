@@ -1118,30 +1118,6 @@ rewards_test() ->
     Tx = new(1, 30, []),
     ?assertEqual([], rewards(Tx)).
 
-consensus_members_rewards_test() ->
-    BaseDir = test_utils:tmp_dir("consensus_members_rewards_test"),
-    Block = blockchain_block:new_genesis_block([]),
-    {ok, Chain} = blockchain:new(BaseDir, Block, undefined, undefined),
-    Ledger = blockchain:ledger(Chain),
-    Vars = #{
-        epoch_reward => 1000,
-        consensus_percent => 0.10
-    },
-    Rewards = #{
-        {gateway, consensus, <<"1">>} => 50,
-        {gateway, consensus, <<"2">>} => 50
-    },
-    meck:new(blockchain_ledger_v1, [passthrough]),
-    meck:expect(blockchain_ledger_v1, consensus_members, fun(_) ->
-        {ok, [O || {gateway, consensus, O} <- maps:keys(Rewards)]}
-    end),
-    ?assertEqual(Rewards, consensus_members_rewards(Ledger, Vars)),
-    ?assert(meck:validate(blockchain_ledger_v1)),
-    meck:unload(blockchain_ledger_v1),
-    test_utils:cleanup_tmp_dir(BaseDir).
-
-
-
 securities_rewards_test() ->
     BaseDir = test_utils:tmp_dir("securities_rewards_test"),
     Block = blockchain_block:new_genesis_block([]),
