@@ -346,4 +346,5 @@ to_json_test() ->
     ?assert(lists:all(fun(K) -> maps:is_key(K, Json) end,
                       [type, hash, payer, payee, address, hashlock, timelock, amount, fee, nonce])).
 
+
 -endif.
